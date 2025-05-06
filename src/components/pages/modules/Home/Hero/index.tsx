@@ -48,10 +48,10 @@ export function HeroSection() {
                 />
               </div>
               <select className="border-l border-gray-300 bg-transparent px-3 text-sm focus:outline-none">
-                <option>All Categories</option>
-                <option>Renewable Energy</option>
-                <option>Zero Waste</option>
-                <option>Sustainable Tech</option>
+                <option>ALL CATEGORIES</option>
+                <option>ENERGY</option>
+                <option>WASTE</option>
+                <option>TRANSPORTATION</option>
               </select>
               <Button className="ml-2 mt-0.5 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700">
                 Search
