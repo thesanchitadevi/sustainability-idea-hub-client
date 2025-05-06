@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Sustainability Idea Hub",
@@ -23,6 +24,7 @@ export default function RootLayout({
           {children}
         </ThemeProvider> */}
         {children}
+        <Toaster />
       </body>
     </html>
   );

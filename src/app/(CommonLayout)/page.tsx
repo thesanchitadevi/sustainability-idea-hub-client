@@ -1,14 +1,12 @@
-import HeroSection from "@/components/ui/modules/Home/Hero";
+import { FeaturedIdeas } from "@/components/pages/modules/Home/FeaturedIdeas";
+import { HeroSection } from "@/components/pages/modules/Home/Hero";
 
 const HomePage = async () => {
-  // Data fetching
-  // const res = await fetch("http://localhost:5000/products")
-
   return (
-    <div>
-      Home Page
+    <>
       <HeroSection />
-    </div>
+      <FeaturedIdeas />
+    </>
   );
 };
 
