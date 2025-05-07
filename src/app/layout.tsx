@@ -3,7 +3,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
-  title: "Sustainability Idea Hub",
+  title: "EcoHive",
   description: "A platform for sharing and discovering sustainability ideas.",
 };
 

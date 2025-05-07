@@ -4,8 +4,6 @@ import React from "react";
 
 const IdeasPage = async () => {
   const ideas = await getAllIdeas();
-  // Add this for debugging
-  console.log("API Response:", ideas);
 
   return (
     <section className="py-12">

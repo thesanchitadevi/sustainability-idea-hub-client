@@ -92,7 +92,7 @@ export function IdeaCard({
 
           {/* View Details Link */}
           <Link
-            href={`/ideas/${idea.id}`}
+            href={`/idea/${idea.id}`}
             className="text-sm font-medium text-green-600 hover:text-green-800 hover:underline"
             aria-label={`View details for ${idea.title}`}
           >

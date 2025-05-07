@@ -3,7 +3,6 @@ import { IIdea } from "@/types";
 interface ApiResponse {
   success: boolean;
   data: IIdea[];
-  count?: number;
 }
 
 const BASE_URL =
@@ -26,12 +25,6 @@ export async function getFeaturedIdeas(): Promise<IIdea[]> {
     const featured = ideas
       .filter((idea) => {
         const isFeatured = idea.isPublished === true; // && idea.status !== "APPROVED"
-        if (!isFeatured) {
-          console.log("Filtered out idea:", idea.id, "Reason:", {
-            isPublished: idea.isPublished,
-            status: idea.status,
-          });
-        }
         return isFeatured;
       })
       .sort(
@@ -75,7 +68,6 @@ export async function getAllIdeas(options?: {
     const result: ApiResponse = await response.json();
     // console.log("Result:", result);
 
-
     return result?.data?.data || [];
   } catch (error) {
     console.error("Failed to fetch ideas:", error);
@@ -84,14 +76,26 @@ export async function getAllIdeas(options?: {
 }
 
 export async function getIdeaById(id: string): Promise<IIdea | null> {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/idea/${id}`;
+
   try {
-    const response = await fetch(`${BASE_URL}/idea/${id}`);
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    return await response.json();
+    const result = await response.json();
+
+    const ideaData = result?.data || null;
+
+    return ideaData as IIdea;
   } catch (error) {
     console.error("Failed to fetch idea:", error);
     return null;
