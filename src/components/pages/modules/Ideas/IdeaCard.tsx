@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { VoteButton } from "./VoteButton";
-import { IIdea, IdeaCategory } from "@/types";
+import { IIdea } from "@/types";
+import { CategoryBadge } from "./CategoryBadge";
 
 interface IdeaCardProps {
   idea: IIdea;
@@ -22,9 +23,6 @@ export function IdeaCard({
     idea.images?.length > 0
       ? idea.images[Math.min(displayImageIndex, idea.images.length - 1)]
       : null;
-
-  // Determine category display properties
-  const categoryDisplay = getCategoryDisplay(idea.category);
 
   return (
     <article
@@ -61,10 +59,7 @@ export function IdeaCard({
 
       {/* Category Badge - Positioned over image */}
       <div className="absolute left-3 top-3 z-10">
-        <div className="flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-xs font-medium backdrop-blur-sm shadow-sm">
-          <div className={`h-2 w-2 rounded-full ${categoryDisplay.color}`} />
-          {categoryDisplay.name}
-        </div>
+        <CategoryBadge category={idea.category} />
       </div>
 
       {/* Card Content */}
@@ -107,22 +102,4 @@ export function IdeaCard({
       </div>
     </article>
   );
-}
-
-/**
- * Maps category enum to display properties
- * @param category - The idea category from enum
- * @returns Object with display name and color class
- */
-function getCategoryDisplay(category: IdeaCategory) {
-  switch (category) {
-    case IdeaCategory.ENERGY:
-      return { name: "Energy", color: "bg-green-500" };
-    case IdeaCategory.WASTE:
-      return { name: "Waste", color: "bg-amber-500" };
-    case IdeaCategory.TRANSPORTATION:
-      return { name: "Transport", color: "bg-blue-500" };
-    default:
-      return { name: "General", color: "bg-gray-500" };
-  }
 }

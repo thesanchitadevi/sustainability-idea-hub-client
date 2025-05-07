@@ -22,7 +22,7 @@ export function VoteButton({ initialVotes, ideaId }: VoteButtonProps) {
       setHasVoted(!hasVoted);
 
       // API call
-      const response = await fetch(`/api/ideas/${ideaId}/vote`, {
+      const response = await fetch(`/api/idea/${ideaId}/vote`, {
         method: "POST",
         body: JSON.stringify({ action: hasVoted ? "unvote" : "vote" }),
       });
@@ -48,7 +48,7 @@ export function VoteButton({ initialVotes, ideaId }: VoteButtonProps) {
       }`}
     >
       <ArrowBigUp className={`h-4 w-4 ${hasVoted ? "fill-green-600" : ""}`} />
-      {votes.toLocaleString()}
+      {votes}
     </Button>
   );
 }

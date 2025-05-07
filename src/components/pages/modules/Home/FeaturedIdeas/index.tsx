@@ -6,6 +6,7 @@ import { getFeaturedIdeas } from "@/lib/api/ideas/action";
 
 export async function FeaturedIdeas() {
   const ideas = await getFeaturedIdeas();
+  console.log("Featured Ideas API Response:", ideas);
 
   return (
     <section className="py-12">
