@@ -1,8 +1,4 @@
-"use client";
-
-import Link from "next/link";
-
-import LoginForm from "@/components/pages/modules/login/LoginForm";
+import RegisterForm from "@/components/pages/modules/register/RegisterForm";
 import {
   Card,
   CardContent,
@@ -11,30 +7,31 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Link from "next/link";
 
-export default function LoginPage() {
+export default function RegistrationPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold">
-            Sustainability Idea Hub
+            Create an Account
           </CardTitle>
-          <CardDescription>Enter your credentials to sign in</CardDescription>
+          <CardDescription>Enter your details to register</CardDescription>
         </CardHeader>
 
         <CardContent>
-          <LoginForm />
+          <RegisterForm />
         </CardContent>
 
         <CardFooter>
           <div className="text-center w-full text-sm">
-            Don&apos;t have an account?{" "}
+            Already have an account?{" "}
             <Link
-              href="/register"
+              href="/login"
               className="font-medium text-primary hover:underline"
             >
-              Sign up
+              Sign in
             </Link>
           </div>
         </CardFooter>
