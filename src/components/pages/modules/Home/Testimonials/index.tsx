@@ -46,7 +46,7 @@ export function Testimonials() {
   }
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 ">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-green-900 mb-4">
           Community Testimonials

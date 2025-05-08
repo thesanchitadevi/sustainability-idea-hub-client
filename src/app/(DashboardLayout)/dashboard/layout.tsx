@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sustainability Idea Hub",
+  title: "EcoHive",
   description: "A platform for sharing and discovering sustainability ideas.",
 };
 
