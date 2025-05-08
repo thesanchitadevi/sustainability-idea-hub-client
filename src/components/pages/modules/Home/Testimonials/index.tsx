@@ -48,15 +48,19 @@ export function Testimonials() {
   return (
     <section className="py-16 ">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-green-900 mb-4">
-          Community Testimonials
-        </h2>
+        <div className="mb-12">
+          <h2 className="text-3xl font-bold text-green-900 mb-4">
+            Community Testimonials
+          </h2>
 
-        {/* Description */}
-        <p className="mb-6 text-gray-500 font-normal">
-          Our community members share their experiences and insights on the most
-          impactful ideas.
-        </p>
+          {/* Description */}
+          <p className="mb-6 text-gray-500 font-normal">
+            Our community members share their experiences and insights on the
+            most impactful ideas.
+          </p>
+        </div>
+
+        {/* Loading State */}
 
         {isLoading ? (
           <div className="grid gap-8 md:grid-cols-3">

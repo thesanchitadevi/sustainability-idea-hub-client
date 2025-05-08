@@ -43,25 +43,31 @@ export function FeaturedIdeas() {
     <section className="py-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header with View All button */}
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-3xl font-bold text-green-900">Featured Ideas</h2>
-          <Button
-            asChild
-            variant="link"
-            className="group text-green-600 hover:text-green-800"
-          >
-            <Link href="/idea">
-              View All
-              <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </Button>
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-3xl font-bold text-green-900">
+              Featured Ideas
+            </h2>
+            <Button
+              asChild
+              variant="link"
+              className="group text-green-600 hover:text-green-800"
+            >
+              <Link href="/idea">
+                View All
+                <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </Button>
+          </div>
+
+          {/* Description */}
+          <p className="mb-6 text-gray-500 font-normal">
+            These featured ideas have been selected for their potential impact
+            and creativity. Join the conversation and vote for your favorites!
+          </p>
         </div>
 
-        {/* Description */}
-        <p className="mb-6 text-gray-500 font-normal">
-          These featured ideas have been selected for their potential impact and
-          creativity. Join the conversation and vote for your favorites!
-        </p>
+        {/* Idea Cards Grid */}
 
         {isLoading ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
