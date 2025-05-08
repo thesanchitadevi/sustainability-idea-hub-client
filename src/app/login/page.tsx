@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import LoginForm from "@/components/pages/modules/login/LoginForm";
+import LoginForm from "@/components/forms/LoginForm";
 import {
   Card,
   CardContent,
