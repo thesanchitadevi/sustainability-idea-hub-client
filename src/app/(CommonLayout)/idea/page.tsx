@@ -6,7 +6,18 @@ const IdeasPage = async () => {
   const ideas = await getAllIdeas();
 
   return (
-    <section className="py-12">
+    <section>
+      {/* Hero Section */}
+      <section className="relative py-20 bg-gradient-to-r from-green-600 to-green-800 text-white">
+        <div className="container mx-auto px-6 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">Our Ideas</h1>
+          <p className="text-xl  max-w-4xl mx-auto">
+            Explore the innovative ideas and solutions proposed by our
+            community. Each idea represents a unique perspective and potential
+            for positive change.
+          </p>
+        </div>
+      </section>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* No Ideas Message */}
         {ideas.length === 0 && (
