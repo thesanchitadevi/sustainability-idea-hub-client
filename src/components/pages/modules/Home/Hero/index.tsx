@@ -5,7 +5,7 @@ import heroBg from "@/assets/hero-bg.jpg";
 
 export function HeroSection() {
   return (
-    <section className="relative h-[600px]">
+    <section className="relative h-[550px]">
       {" "}
       {/* Fixed height for consistency */}
       {/* Background Image with Overlay - Next.js optimized */}
@@ -22,7 +22,7 @@ export function HeroSection() {
         <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
       </div>
       {/* Content */}
-      <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+      <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-30">
         <div className="text-center">
           {/* Tagline */}
           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
@@ -57,20 +57,6 @@ export function HeroSection() {
                 Search
               </Button>
             </div>
-          </div>
-
-          {/* CTA Buttons */}
-          <div className="mt-8 flex justify-center gap-4">
-            <Button size="lg" className="bg-green-600 hover:bg-green-700">
-              Submit Your Idea
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className=" border-white hover:bg-white/20"
-            >
-              How It Works
-            </Button>
           </div>
         </div>
       </div>

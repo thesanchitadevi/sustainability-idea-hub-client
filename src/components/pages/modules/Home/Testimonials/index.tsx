@@ -35,16 +35,6 @@ export function Testimonials() {
     fetchTopIdeas();
   }, []);
 
-  if (isLoading) {
-    return (
-      <section className="py-16 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p>Loading testimonials...</p>
-        </div>
-      </section>
-    );
-  }
-
   if (error) {
     return (
       <section className="py-16 bg-gray-50">
@@ -68,7 +58,30 @@ export function Testimonials() {
           impactful ideas.
         </p>
 
-        {topIdeas.length > 0 ? (
+        {isLoading ? (
+          <div className="grid gap-8 md:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow"
+              >
+                <div className="animate-pulse">
+                  <div className="h-6 w-20 bg-gray-200 rounded mb-4"></div>
+                  <div className="h-6 w-full bg-gray-200 rounded mb-3"></div>
+                  <div className="space-y-2 mb-4">
+                    <div className="h-4 w-full bg-gray-200 rounded"></div>
+                    <div className="h-4 w-full bg-gray-200 rounded"></div>
+                    <div className="h-4 w-3/4 bg-gray-200 rounded"></div>
+                  </div>
+                  <div className="flex items-center gap-3 mt-4">
+                    <div className="h-10 w-10 rounded-full bg-gray-200"></div>
+                    <div className="h-4 w-24 bg-gray-200 rounded"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : topIdeas.length > 0 ? (
           <div className="grid gap-8 md:grid-cols-3">
             {topIdeas.map((idea) => (
               <div
