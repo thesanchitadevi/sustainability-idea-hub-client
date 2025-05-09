@@ -11,22 +11,30 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // const user = {
-  //   email: "kamrul@gmail.com",
-  //   role: "ADMIN"
-  // };
   const [user, setUser] = useState<any>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
-      const currentUser = await getCurrentUser();
-      setUser(currentUser);
+      try {
+        const currentUser = await getCurrentUser();
+        setUser(currentUser);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      } finally {
+        setLoading(false);
+      }
     };
+
     fetchUser();
   }, []);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   const topBarText = user?.role === "ADMIN" ? "Admin Panel" : "Member Panel";
-  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
     <div className="flex h-screen bg-white dark:bg-black text-black dark:text-white">
