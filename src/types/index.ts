@@ -33,3 +33,13 @@ export interface IIdea {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface IAllUser {
+  id: string;
+  email: string;
+  name:string;
+  role: string;
+  status: string;
+  createdAt: string; 
+  updatedAt: string; 
+}
