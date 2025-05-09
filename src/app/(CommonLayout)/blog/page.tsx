@@ -1,7 +1,12 @@
+import { BlogSection } from "@/components/pages/modules/Blog";
 import React from "react";
 
 const BlogPage = () => {
-  return <div>BlogPage</div>;
+  return (
+    <>
+      <BlogSection />
+    </>
+  );
 };
 
 export default BlogPage;

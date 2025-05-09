@@ -1,18 +1,49 @@
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Sustainability Idea Hub",
-  description: "A platform for sharing and discovering sustainability ideas.",
-};
+import { Topbar } from "@/components/shared/Dashboard/AdminDashboard/TopBar";
+import { Sidebar2 } from "@/components/shared/Dashboard/MemberDashboard/memberSidebar";
+import { useEffect, useState } from "react";
+import { Sidebar } from "@/components/shared/Dashboard/AdminDashboard/sidebar";
+import { getCurrentUser } from "@/service/auth";
 
-export default async function DashboardLayout({
+export default function DashboardLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  // const user = {
+  //   email: "kamrul@gmail.com",
+  //   role: "ADMIN"
+  // };
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const currentUser = await getCurrentUser();
+      setUser(currentUser);
+    };
+    fetchUser();
+  }, []);
+
+  const topBarText = user?.role === "ADMIN" ? "Admin Panel" : "Member Panel";
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
   return (
-    <div className="min-h-screen">
-      <div className="w-full">{children}</div>
+    <div className="flex h-screen bg-white dark:bg-black text-black dark:text-white">
+      {user?.role === "ADMIN" ? (
+        <Sidebar setSidebarOpen={setSidebarOpen} />
+      ) : (
+        <Sidebar2 setSidebarOpen={setSidebarOpen} />
+      )}
+
+      <div
+        className={`flex-1 flex flex-col transition-all duration-300 ${
+          sidebarOpen ? "md:ml-64" : "ml-0"
+        }`}
+      >
+        <Topbar text={topBarText} />
+        <main className="p-4">{children}</main>
+      </div>
     </div>
   );
 }

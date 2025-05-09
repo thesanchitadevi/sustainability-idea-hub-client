@@ -1,4 +1,6 @@
+"use server";
 import { IIdea } from "@/types";
+import { cookies } from "next/headers";
 
 interface ApiResponse {
   success: boolean;
@@ -7,6 +9,35 @@ interface ApiResponse {
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api";
+
+export const createIdea = async (formData: FormData) => {
+  console.log("Creating idea with formData:", formData);
+
+  try {
+    // Get access token directly
+    const accessToken = (await cookies()).get("accessToken")?.value;
+
+    if (!accessToken) {
+      throw new Error("User not authenticated");
+    }
+
+    const response = await fetch(`${BASE_URL}/idea`, {
+      method: "POST",
+      headers: {
+        Authorization: accessToken,
+      },
+      body: formData,
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error("Error in createIdea:", error);
+    throw error;
+  }
+};
 
 export async function getFeaturedIdeas(): Promise<IIdea[]> {
   try {
