@@ -37,7 +37,7 @@ export default function DashboardLayout({
   const topBarText = user?.role === "ADMIN" ? "Admin Panel" : "Member Panel";
 
   return (
-    <div className="flex h-screen bg-white dark:bg-black text-black dark:text-white">
+    <div className="flex min-h-screen bg-white dark:bg-black text-black dark:text-white">
       {user?.role === "ADMIN" ? (
         <Sidebar setSidebarOpen={setSidebarOpen} />
       ) : (
