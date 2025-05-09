@@ -1,6 +1,7 @@
+import Providers from "@/providers/Provider";
 import type { Metadata } from "next";
-import "./globals.css";
 import { Toaster } from "sonner";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "EcoHive",
@@ -13,9 +14,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
-        {/* <ThemeProvider
+    <Providers>
+      <html lang="en">
+        <body>
+          {/* <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
@@ -23,9 +25,10 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider> */}
-        {children}
-        <Toaster />
-      </body>
-    </html>
+          {children}
+          <Toaster />
+        </body>
+      </html>
+    </Providers>
   );
 }
