@@ -16,6 +16,14 @@ export interface IIdeaImage {
   imageUrl: string;
 }
 
+interface IUser {
+  id: string;
+  name?: string;
+  email?: string;
+  imageUrl?: string;
+  role?: string;
+}
+
 export interface IIdea {
   id: string;
   user_id: string;
@@ -30,6 +38,7 @@ export interface IIdea {
   isPublished: boolean;
   category: IdeaCategory;
   images: IIdeaImage[];
+  user: IUser;
   createdAt: string;
   updatedAt: string;
 }
@@ -37,9 +46,9 @@ export interface IIdea {
 export interface IAllUser {
   id: string;
   email: string;
-  name:string;
+  name: string;
   role: string;
   status: string;
-  createdAt: string; 
-  updatedAt: string; 
+  createdAt: string;
+  updatedAt: string;
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 
 "use client";
 
@@ -32,7 +33,9 @@ export const ImageUploader = ({ onImagesChange }: ImageUploaderProps) => {
 
   const removeImage = (index: number) => {
     setImagePreviews((prev) => prev.filter((_, i) => i !== index));
-    onImagesChange(imagePreviews.filter((_, i) => i !== index).map(() => new File([], ""))); // This is a placeholder - you might want to handle this differently
+    onImagesChange(
+      imagePreviews.filter((_, i) => i !== index).map(() => new File([], ""))
+    ); // This is a placeholder - you might want to handle this differently
   };
 
   return (

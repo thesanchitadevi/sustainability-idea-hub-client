@@ -9,8 +9,8 @@ export default async function IdeaDetailsPage({
   const idea = await getIdeaById(params.id);
 
   return (
-    <main className="container py-8">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <IdeaDetailsCard idea={idea} />
-    </main>
+    </section>
   );
 }

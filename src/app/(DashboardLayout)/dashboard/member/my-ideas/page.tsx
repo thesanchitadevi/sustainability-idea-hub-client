@@ -4,18 +4,32 @@ import { useRouter } from "next/navigation";
 import { IdeaStatus, IIdea } from "@/types";
 import { getCurrentUser } from "@/service/auth";
 import { getAllIdeas } from "@/lib/api/ideas/action";
+import { Edit, EyeIcon, Trash } from "lucide-react";
+import ViewModal from "@/components/pages/modules/Ideas/ViewModal";
 
 export default function MemberIdeasPage() {
   const [ideas, setIdeas] = useState<IIdea[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedIdea, setSelectedIdea] = useState<IIdea | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
+
+  const openModal = (idea: IIdea) => {
+    setSelectedIdea(idea);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedIdea(null);
+  };
 
   useEffect(() => {
     const fetchIdeas = async () => {
       try {
         const user = await getCurrentUser();
         console.log("user", user);
-        
+
         if (!user) {
           router.push("/login");
           return;
@@ -25,7 +39,6 @@ export default function MemberIdeasPage() {
         const userIdeas = await getAllIdeas(user.id, {
           sortBy: "newest",
         });
-
 
         // Additional client-side filtering as a safeguard
         const filteredIdeas = userIdeas.filter((idea) => {
@@ -147,7 +160,7 @@ export default function MemberIdeasPage() {
                       {idea.isPublished ? "Yes" : "No"}
                     </span>
                   </td>
-                  <td className="py-2 px-4 border">$200</td>
+                  <td className="py-2 px-4 border">৳ 200</td>
                   <td className="py-2 px-4 border">{idea.category}</td>
                   <td className="py-2 px-4 border">
                     {new Date(idea.createdAt).toLocaleDateString()}
@@ -155,18 +168,26 @@ export default function MemberIdeasPage() {
                   <td className="py-2 px-4 border text-center">
                     <button
                       onClick={() => router.push(`/idea/${idea.id}`)}
-                      className="text-blue-600 hover:underline mr-2"
+                      className="text-blue-600 hover:underline mr-2 cursor-pointer"
                     >
-                      View
+                      <EyeIcon className="w-4 h-4 inline-block mr-1" />
                     </button>
                     {idea.status === "DRAFT" && (
                       <button
                         onClick={() => router.push(`/idea/edit/${idea.id}`)}
-                        className="text-green-600 hover:underline"
+                        className="text-green-600 hover:underline mr-2 cursor-pointer"
                       >
-                        Edit
+                        <Edit className="w-4 h-4 inline-block mr-1" />
                       </button>
                     )}
+                    <button
+                      onClick={() => {
+                        // Handle delete action here
+                      }}
+                      className="text-blue-600 hover:underline mr-2 cursor-pointer"
+                    >
+                      <Trash className="w-4 h-4 inline-block mr-1" />
+                    </button>
                   </td>
                 </tr>
               ))
@@ -174,6 +195,15 @@ export default function MemberIdeasPage() {
           </tbody>
         </table>
       </div>
+
+      {/* Use the ViewModal component */}
+      {selectedIdea && (
+        <ViewModal
+          idea={selectedIdea}
+          isOpen={isModalOpen}
+          onClose={closeModal}
+        />
+      )}
     </div>
   );
 }
