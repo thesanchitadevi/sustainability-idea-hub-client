@@ -5,6 +5,7 @@ import { Sidebar2 } from "@/components/shared/Dashboard/MemberDashboard/memberSi
 import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/shared/Dashboard/AdminDashboard/sidebar";
 import { getCurrentUser } from "@/service/auth";
+import Spinner from "@/components/ui/Spinner";
 
 export default function DashboardLayout({
   children,
@@ -31,7 +32,11 @@ export default function DashboardLayout({
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-white dark:bg-black text-black dark:text-white">
+        <Spinner />
+      </div>
+    );
   }
 
   const topBarText = user?.role === "ADMIN" ? "Admin Panel" : "Member Panel";

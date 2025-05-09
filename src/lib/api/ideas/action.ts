@@ -11,8 +11,6 @@ const BASE_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api";
 
 export const createIdea = async (formData: FormData) => {
-  console.log("Creating idea with formData:", formData);
-
   try {
     // Get access token directly
     const accessToken = (await cookies()).get("accessToken")?.value;
@@ -31,7 +29,8 @@ export const createIdea = async (formData: FormData) => {
     });
 
     const data = await response.json();
-
+    console.log({data});
+    
     return data;
   } catch (error) {
     console.error("Error in createIdea:", error);
@@ -71,15 +70,20 @@ export async function getFeaturedIdeas(): Promise<IIdea[]> {
   }
 }
 
-export async function getAllIdeas(options?: {
-  status?: string;
-  isPublished?: boolean;
-  sortBy?: "newest" | "oldest";
-  limit?: number;
-}): Promise<IIdea[]> {
+export async function getAllIdeas(
+  userId: string,
+  options?: {
+    status?: string;
+    isPublished?: boolean;
+    sortBy?: "newest" | "oldest";
+    limit?: number;
+  }
+): Promise<IIdea[]> {
   try {
     // Construct query parameters based on options
     const queryParams = new URLSearchParams();
+
+    queryParams.append("userId", userId);
 
     if (options?.status) {
       queryParams.append("status", options.status);

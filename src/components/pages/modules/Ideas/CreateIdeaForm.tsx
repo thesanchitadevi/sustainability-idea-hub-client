@@ -48,14 +48,12 @@ const CreateIdeaForm = () => {
 
     try {
       const formPayload = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        formPayload.append(key, String(value));
-      });
-      images.forEach((image) => formPayload.append("images", image));
+      formPayload.append("data", JSON.stringify(formData));
+      images.forEach((image) => formPayload.append("files", image));
 
       await createIdea(formPayload);
       toast.success("Idea saved successfully!");
-      router.push("/idea");
+      router.push("/dashboard/member/my-ideas");
     } catch (err) {
       toast.error("Failed to save draft. Please try again.");
       console.error("Error:", err);
