@@ -1,5 +1,5 @@
 import { z } from "zod";
-const MAX_FILE_SIZE = 1.5 * 1024 * 1024; //1.5mb
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
   "image/jpg",
@@ -19,13 +19,12 @@ export const registerFormSchema = z
       .min(6, { message: "Confirm password must be at least 6 characters" }),
     profileImage: z
       .any()
-      .refine((files) => files?.length == 1, "Image is required.")
+      .refine((files) => files !== undefined, {
+        message: "Please upload a profile image",
+      })
+      .refine((files) => files?.size <= MAX_FILE_SIZE, `Max file size is 2mb.`)
       .refine(
-        (files) => files?.[0]?.size <= MAX_FILE_SIZE,
-        `Max file size is 1.5MB.`
-      )
-      .refine(
-        (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+        (files) => ACCEPTED_IMAGE_TYPES.includes(files?.type),
         ".jpg, .jpeg, .png and .webp files are accepted."
       ),
   })

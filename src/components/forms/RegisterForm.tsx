@@ -18,8 +18,11 @@ import { z } from "zod";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { registerUser } from "@/lib/actions/user.action";
 import { registerFormSchema } from "@/schemas/register.validation";
 import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +32,7 @@ const RegisterForm = () => {
   );
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  const router = useRouter();
   const form = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
@@ -62,18 +65,32 @@ const RegisterForm = () => {
 
     try {
       // Here you would implement your registration logic
-      console.log("Registration attempt with:", {
-        name: values.name,
-        email: values.email,
+      // console.log("Registration attempt with:", {
+      //   name: values.name,
+      //   email: values.email,
+      //   password: values.password,
+      //   profileImage: values.profileImage,
+      // });
+      const data = {
+        user: {
+          name: values.name,
+          email: values.email,
+        },
         password: values.password,
-        profileImage: values.profileImage ? values.profileImage[0] : null,
-      });
+      };
 
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Redirect to login page after successful registration
-      // router.push("/login");
+      const formData = new FormData();
+      formData.append("file", values.profileImage);
+      formData.append("data", JSON.stringify(data));
+      const response = await registerUser(formData);
+      if (!response?.success) {
+        setError(response?.message || "Registration failed");
+        return;
+      } else {
+        toast.success("Registration successful");
+        router.push("/");
+      }
+      console.log({ response });
     } catch (err) {
       setError("Failed to register. Please try again.");
       console.error(err);
@@ -128,31 +145,37 @@ const RegisterForm = () => {
             )}
           />
 
-          <FormItem>
-            <FormLabel>Profile Image</FormLabel>
-            <FormControl>
-              <div className="space-y-2">
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  disabled={isLoading}
-                />
-                {profileImagePreview && (
-                  <div className="mt-2">
-                    <Image
-                      src={profileImagePreview}
-                      width={80}
-                      height={80}
-                      alt="Profile preview"
-                      className="h-20 w-20 rounded-full object-cover"
+          <FormField
+            control={form.control}
+            name="profileImage"
+            render={() => (
+              <FormItem>
+                <FormLabel>Profile Image</FormLabel>
+                <FormControl>
+                  <div className="space-y-2">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      disabled={isLoading}
                     />
+                    {profileImagePreview && (
+                      <div className="mt-2">
+                        <Image
+                          src={profileImagePreview}
+                          width={80}
+                          height={80}
+                          alt="Profile preview"
+                          className="h-20 w-20 rounded-full object-cover"
+                        />
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}
@@ -222,7 +245,11 @@ const RegisterForm = () => {
             }}
           />
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button
+            type="submit"
+            className="w-full cursor-pointer"
+            disabled={isLoading}
+          >
             {isLoading ? "Registering..." : "Register"}
           </Button>
         </form>

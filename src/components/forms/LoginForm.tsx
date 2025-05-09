@@ -16,13 +16,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { loginUser } from "@/lib/actions/auth.action";
 import { loginFormSchema } from "@/schemas/login.validation";
 import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
@@ -37,14 +41,15 @@ const LoginForm = () => {
     setError("");
 
     try {
-      // Here you would implement your authentication logic
-      console.log("Login attempt with:", values);
-
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Redirect to dashboard or home page after successful login
-      // router.push("/dashboard");
+      console.log("Logging in with values:", values);
+      const res = await loginUser(values);
+      if (res?.success && res?.data?.accessToken) {
+        toast.success("Login successful!");
+        router.push("/");
+      } else {
+        setError("Invalid email or password.");
+      }
+      // console.log("Login response:", res);
     } catch (err) {
       setError("Failed to sign in. Please check your credentials.");
       console.error(err);
