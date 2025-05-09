@@ -1,28 +1,36 @@
+"use client";
 
-
-'use client'
-
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Users, FileText, Menu, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { cn } from '@/lib/utils'
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { LayoutDashboard, Users, FileText, Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 const links = [
-  { href: '/dashboard/member', label: 'Member Dashboard', icon: LayoutDashboard },
-  { href: '/dashboard/member/user', label: 'Users', icon: Users },
-  { href: '/dashboard/member/reports', label: 'Reports', icon: FileText },
-]
+  {
+    href: "/dashboard/member",
+    label: "Member Dashboard",
+    icon: LayoutDashboard,
+  },
+  { href: "/dashboard/member/create-idea", label: "Create Idea", icon: Users },
+  { href: "/dashboard/member/ideas", label: "My Ideas", icon: FileText },
+  { href: "/dashboard/member/profile", label: "Profile", icon: Users },
+  { href: "/dashboard/member/logout", label: "Logout", icon: Users },
+];
 
-export function Sidebar2({ setSidebarOpen }: { setSidebarOpen: (open: boolean) => void }) {
-  const pathname = usePathname()
-  const [open, setOpen] = useState(false)
+export function Sidebar2({
+  setSidebarOpen,
+}: {
+  setSidebarOpen: (open: boolean) => void;
+}) {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
 
-  const handleClose = () => setOpen(false)
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
-    setSidebarOpen(open)
-  }, [open, setSidebarOpen])
+    setSidebarOpen(open);
+  }, [open, setSidebarOpen]);
 
   return (
     <>
@@ -43,7 +51,7 @@ export function Sidebar2({ setSidebarOpen }: { setSidebarOpen: (open: boolean) =
       <aside
         className={cn(
           "fixed md:relative top-0 left-0 h-full w-64 bg-gray-100 dark:bg-gray-900 z-40 transform transition-transform duration-300 ease-in-out",
-          open ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+          open ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         )}
       >
         <nav className="space-y-2 p-4 pt-16 md:pt-4 h-full">
@@ -63,6 +71,5 @@ export function Sidebar2({ setSidebarOpen }: { setSidebarOpen: (open: boolean) =
         </nav>
       </aside>
     </>
-  )
+  );
 }
-
