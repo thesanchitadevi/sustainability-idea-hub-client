@@ -42,7 +42,12 @@ const LoginForm = () => {
 
     try {
       console.log("Logging in with values:", values);
-      const res = await loginUser(values);
+      const res = await loginUser(
+        values as {
+          email: string;
+          password: string;
+        }
+      );
       if (res?.success && res?.data?.accessToken) {
         toast.success("Login successful!");
         router.push("/");
