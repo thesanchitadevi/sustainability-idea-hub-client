@@ -1,4 +1,7 @@
+"use server";
 import { IIdea } from "@/types";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 interface ApiResponse {
   success: boolean;
@@ -7,6 +10,24 @@ interface ApiResponse {
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api";
+
+export const createIdea = async (formData: FormData) => {
+  try {
+    const response = await fetch(`${BASE_URL}/idea`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to create idea");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error in createIdea:", error);
+    throw error;
+  }
+};
 
 export async function getFeaturedIdeas(): Promise<IIdea[]> {
   try {
