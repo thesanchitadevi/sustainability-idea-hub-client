@@ -3,10 +3,10 @@ import { IIdea } from "@/types";
 import { cookies } from "next/headers";
 
 interface ApiResponse {
-  success: boolean;
-  data: IIdea[];
+  data: {
+    data: IIdea[];
+  };
 }
-
 const BASE_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api";
 
