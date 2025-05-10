@@ -5,8 +5,8 @@ import { getCurrentUser } from "./service/auth";
 const authRoutes = ['/login', '/register'];
 
 const roleBasedPrivateRoutes = {
-    admin:[/^\/ADMIN/],
-    member:[/^\/MEMBERS/],
+    admin:[/^\/dashboard\/admin/],
+    member:[/^\/dashboard\/member/],
   
 }
 type Role = keyof typeof roleBasedPrivateRoutes;
@@ -15,8 +15,11 @@ export const  middleware = async(req: NextRequest) => {
 
     const user = await getCurrentUser();
    
+   
 
     const {pathname}= req.nextUrl;
+ 
+
     if(!user) {
         if(authRoutes.includes(pathname)) {
             return NextResponse.next();
@@ -27,12 +30,19 @@ export const  middleware = async(req: NextRequest) => {
             )
         }
     }
-    if(user?.role && roleBasedPrivateRoutes[user?.role as Role]) {
-        const routes = roleBasedPrivateRoutes[user?.role as Role];
+    
+    let role = user?.role?.toLowerCase() ;
+    // console.log(role)
+    if(role === 'members') role = 'member';
+    // console.log(role)
+
+    if(user?.role && roleBasedPrivateRoutes[role as Role]) {
+        const routes = roleBasedPrivateRoutes[role as Role];
         if(routes.some(route => pathname.match(route))) {
             return NextResponse.next();
         }
     }
+    console.log(req.url)
     return  NextResponse.redirect(new URL("/", req.url))
 
 }
@@ -41,11 +51,11 @@ export const config = {
     // matcher er moddhe j j private route hobe tara thakbe
     matcher: [
       "/login",
-      "/dashboard",
-      "/dashboard/admin",
-      "/dashboard/admin/:page",
-      "/dashboard/member",
-      "/dashboard/member/:page",
+      "/dashboard/:path*",
+    //   "/dashboard/admin",
+    //   "/dashboard/admin/:page",
+    //   "/dashboard/member",
+    //   "/dashboard/member/:page",
 
     ], 
   };

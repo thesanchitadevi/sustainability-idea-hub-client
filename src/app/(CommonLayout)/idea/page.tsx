@@ -4,8 +4,10 @@ import { getAllIdeas } from "@/lib/api/ideas/action";
 
 const IdeasPage = async () => {
   const user = await getCurrentUser();
-  const ideas = await getAllIdeas(user?.userId);
-  console.log("ideas", ideas);
+  const ideas = await getAllIdeas(user?.id);
+
+  console.log(ideas);
+
   return (
     <section>
       {/* Hero Section */}

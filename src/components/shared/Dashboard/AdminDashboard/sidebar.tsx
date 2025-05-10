@@ -42,7 +42,7 @@ export function Sidebar({ setSidebarOpen }: { setSidebarOpen: (open: boolean) =>
 
       <aside
         className={cn(
-          "fixed md:relative top-0 left-0 h-full w-64 bg-gray-100 dark:bg-gray-900 z-40 transform transition-transform duration-300 ease-in-out",
+          "fixed md:relative top-0 left-0  w-64 bg-gray-100 h-screen dark:bg-gray-900 z-40 transform transition-transform duration-300 ease-in-out",
           open ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         )}
       >

@@ -19,6 +19,7 @@ export const getCurrentUser = async () => {
       id: decoded.userId,
       name: decoded.name,
       email: decoded.email,
+      role:decoded.role
     };
   } catch (error) {
     console.error("Error decoding token:", error);
@@ -104,3 +105,7 @@ export const changeUserRole = async (id: string, data: { role: string }) => {
     return Error(error);
   }
 };
+
+export const logOut = async() => {
+  (await cookies()).delete('accessToken');
+}
