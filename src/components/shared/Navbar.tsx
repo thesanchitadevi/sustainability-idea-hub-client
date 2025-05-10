@@ -5,12 +5,14 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "../ui/button";
+import { ICurrentUser } from "@/types";
 
-export function Navbar() {
+export function Navbar({user} : {user : ICurrentUser}) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const isLoggedIn = false; // Replace with your auth logic
 
+  // console.log(user)
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Ideas", href: "/idea" },
@@ -50,9 +52,9 @@ export function Navbar() {
 
           {/* Auth Buttons (Desktop) */}
           <div className="hidden md:flex items-center gap-2">
-            {isLoggedIn ? (
+            {user ? (
               <Link href="/profile">
-                <Button variant="outline" className="text-lg">
+                <Button variant="outline" className="text-lg cursor-pointer">
                   My Profile
                 </Button>
               </Link>
@@ -65,6 +67,9 @@ export function Navbar() {
                 </Link>
               </>
             )}
+            <Button variant="outline" className=" cursor-pointer text-lg">
+                        Logout
+            </Button>
           </div>
 
           {/* Mobile Toggle */}
@@ -99,9 +104,9 @@ export function Navbar() {
                 </Link>
               ))}
               <div className="pt-4 border-t space-y-2">
-                {isLoggedIn ? (
+                {user ? (
                   <Link href="/profile">
-                    <Button className="w-full">My Profile</Button>
+                    <Button className="w-full cursor-pointer">My Profile</Button>
                   </Link>
                 ) : (
                   <>
@@ -115,6 +120,10 @@ export function Navbar() {
                     </Link>
                   </>
                 )}
+                <Button variant="outline" className=" cursor-pointer w-full text-lg">
+                        Logout
+            </Button>
+                
               </div>
             </div>
           </div>

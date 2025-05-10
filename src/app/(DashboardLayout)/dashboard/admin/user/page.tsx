@@ -1,7 +1,7 @@
 
   
 import UserLists from "@/components/shared/Dashboard/AdminDashboard/UsersLists";
-import { getAllUsers } from "@/service/auth";
+import { getAllUsers} from "@/service/auth";
 
 type TSearchParams = Promise<{[key:string] : string | undefined}> 
 
