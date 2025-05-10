@@ -29,8 +29,8 @@ export const createIdea = async (formData: FormData) => {
     });
 
     const data = await response.json();
-    console.log({data});
-    
+    console.log({ data });
+
     return data;
   } catch (error) {
     console.error("Error in createIdea:", error);
@@ -136,3 +136,18 @@ export async function getIdeaById(id: string): Promise<IIdea | null> {
     return null;
   }
 }
+
+export const getIdeaComments = async (ideaId: string) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/comment/${ideaId}`
+    );
+    const result = await res.json();
+    if (result?.success) {
+      return result?.data || [];
+    }
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    throw error;
+  }
+};

@@ -1,11 +1,11 @@
 "use client";
-import Link from "next/link";
-import Image from "next/image";
-import { VoteButton } from "./VoteButton";
-import { IIdea } from "@/types";
-import { CategoryBadge } from "./CategoryBadge";
 import { Button } from "@/components/ui/button";
+import { IIdea } from "@/types";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { CategoryBadge } from "./CategoryBadge";
+import { VoteButton } from "./VoteButton";
 
 interface IdeaCardProps {
   idea: IIdea;
@@ -20,7 +20,7 @@ export function IdeaCard({
 }: IdeaCardProps) {
   const router = useRouter();
 
-  if (!idea.isPublished) return null;
+  // if (!idea.isPublished) return null;
 
   const displayImage =
     idea.images?.length > 0

@@ -1,10 +1,11 @@
 import { IdeaCard } from "@/components/pages/modules/Ideas/IdeaCard";
+import { getCurrentUser } from "@/lib/actions/auth.action";
 import { getAllIdeas } from "@/lib/api/ideas/action";
-import React from "react";
 
 const IdeasPage = async () => {
-  const ideas = await getAllIdeas();
-
+  const user = await getCurrentUser();
+  const ideas = await getAllIdeas(user?.userId);
+  console.log("ideas", ideas);
   return (
     <section>
       {/* Hero Section */}
