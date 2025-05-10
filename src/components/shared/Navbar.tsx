@@ -10,7 +10,7 @@ import { ICurrentUser } from "@/types";
 export function Navbar({user} : {user : ICurrentUser}) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  const isLoggedIn = false; // Replace with your auth logic
+
 
   // console.log(user)
   const navLinks = [
