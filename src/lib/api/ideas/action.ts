@@ -182,3 +182,20 @@ export const deleteIdeaById = async (id: string): Promise<void> => {
     throw error;
   }
 };
+
+export const ideaSubmitReview = async (id: string) => {
+  const accessToken = (await cookies()).get("accessToken")?.value;
+
+  const res = await fetch(`${BASE_URL}/idea/${id}/submit`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: accessToken,
+    },
+    credentials: "include",
+  });
+
+  const submittedIdea = await res.json();
+  console.log("Updated Idea:", submittedIdea);
+  return submittedIdea;
+};

@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { deleteIdeaById } from "@/lib/api/ideas/action";
+import { deleteIdeaById, ideaSubmitReview } from "@/lib/api/ideas/action";
 import { DeleteConfirmationModal } from "./DeleteModal";
 
 interface IdeaTableProps {
@@ -33,6 +33,7 @@ export function IdeaTable({ data: initialData, onView }: IdeaTableProps) {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [ideaToDelete, setIdeaToDelete] = useState<string | null>(null);
   const [data, setData] = useState<IIdea[]>(initialData);
+  const [submittingIdeaId, setSubmittingIdeaId] = useState<string | null>(null);
 
   const handleDeleteClick = (ideaId: string) => {
     setIdeaToDelete(ideaId);
@@ -56,6 +57,41 @@ export function IdeaTable({ data: initialData, onView }: IdeaTableProps) {
     }
   };
 
+  const handleSubmitForReview = async (ideaId: string) => {
+    // Only process if we're not already submitting this idea
+    if (submittingIdeaId === ideaId) return;
+
+    // Find the idea and check if it's in draft status
+    const idea = data.find((item) => item.id === ideaId);
+    if (!idea || idea.status !== IdeaStatus.DRAFT) return;
+
+    setSubmittingIdeaId(ideaId);
+
+    try {
+      // Call your API function
+      const submittedIdea = await ideaSubmitReview(ideaId);
+
+      // Update the local state to reflect the change
+      setData((prevData) =>
+        prevData.map((item) =>
+          item.id === ideaId
+            ? {
+                ...item,
+                status: submittedIdea.status || "PENDING",
+              }
+            : item
+        )
+      );
+
+      toast.success("Idea submitted for review successfully");
+    } catch (error) {
+      console.error("Error submitting idea:", error);
+      toast.error("Failed to submit idea for review");
+    } finally {
+      setSubmittingIdeaId(null);
+    }
+  };
+
   const columns: ColumnDef<IIdea>[] = [
     {
       accessorKey: "title",
@@ -68,19 +104,64 @@ export function IdeaTable({ data: initialData, onView }: IdeaTableProps) {
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => {
-        const status = row.getValue("status") as IdeaStatus;
+        const idea = row.original;
+        const status = idea.status as IdeaStatus;
+        const isSubmitting = submittingIdeaId === idea.id;
+
+        // Determine display status text
+        let displayStatus: string = status;
+        if (status === IdeaStatus.UNDER_REVIEW) {
+          displayStatus = "PENDING";
+        } else if (isSubmitting && status === IdeaStatus.DRAFT) {
+          displayStatus = "PENDING";
+        }
+
         return (
-          <span
+          <button
+            onClick={() => handleSubmitForReview(idea.id)}
+            disabled={status !== IdeaStatus.DRAFT || isSubmitting}
             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
               status === IdeaStatus.APPROVED
                 ? "bg-green-100 text-green-800"
-                : status === "DRAFT"
-                ? "bg-amber-100 text-amber-800"
+                : status === IdeaStatus.DRAFT
+                ? `bg-amber-100 text-amber-800 ${
+                    !isSubmitting && "hover:bg-amber-200 cursor-pointer"
+                  }`
                 : "bg-blue-100 text-blue-800"
+            } ${
+              status === IdeaStatus.DRAFT && !isSubmitting
+                ? "cursor-pointer"
+                : "cursor-default"
             }`}
           >
-            {status}
-          </span>
+            {isSubmitting ? (
+              <span className="flex items-center">
+                <svg
+                  className="animate-spin -ml-1 mr-1 h-3 w-3 text-amber-800"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Submitting...
+              </span>
+            ) : (
+              displayStatus
+            )}
+          </button>
         );
       },
     },
