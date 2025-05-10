@@ -1,54 +1,70 @@
 "use client";
+
 import { createIdea } from "@/lib/api/ideas/action";
-import { IdeaCategory, IdeaStatus } from "@/types";
+import { IdeaCategory } from "@/types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ImageUploader } from "./ImageUploader";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-type FormData = {
-  title: string;
-  problemStatement: string;
-  proposedSolution: string;
-  description: string;
-  status: IdeaStatus;
-  category: IdeaCategory;
-};
+const formSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  problemStatement: z.string().min(1, "Problem statement is required"),
+  proposedSolution: z.string().min(1, "Proposed solution is required"),
+  description: z.string().optional(),
+  status: z.enum(["DRAFT", "PUBLISHED"]),
+  category: z.enum([
+    "ENERGY",
+    "TRANSPORTATION",
+    "WASTE_MANAGEMENT",
+    "WATER",
+    "OTHER",
+  ]),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 const CreateIdeaForm = () => {
-  const [formData, setFormData] = useState<FormData>({
-    title: "",
-    problemStatement: "",
-    proposedSolution: "",
-    description: "",
-    status: "DRAFT" as IdeaStatus,
-    category: "ENERGY" as IdeaCategory,
-  });
-
   const [images, setImages] = useState<File[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value, type } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]:
-        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
-    }));
-  };
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: "",
+      problemStatement: "",
+      proposedSolution: "",
+      description: "",
+      status: "DRAFT",
+      category: "ENERGY",
+    },
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
+  const onSubmit = async (values: FormValues) => {
     try {
       const formPayload = new FormData();
-      formPayload.append("data", JSON.stringify(formData));
+      formPayload.append("data", JSON.stringify(values));
       images.forEach((image) => formPayload.append("files", image));
 
       await createIdea(formPayload);
@@ -57,8 +73,6 @@ const CreateIdeaForm = () => {
     } catch (err) {
       toast.error("Failed to save draft. Please try again.");
       console.error("Error:", err);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -69,122 +83,144 @@ const CreateIdeaForm = () => {
           <h1 className="text-xl font-semibold">Create New Idea</h1>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Compact Form Sections */}
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Title*
-              </label>
-              <input
-                type="text"
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="p-6 space-y-6"
+          >
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
                 name="title"
-                value={formData.title}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Title*</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter idea title" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Category*
-              </label>
-              <select
+              <FormField
+                control={form.control}
                 name="category"
-                value={formData.category}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500"
-              >
-                {Object.values(IdeaCategory).map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
-            </div>
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category*</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a category" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {Object.values(IdeaCategory).map((cat) => (
+                          <SelectItem key={cat} value={cat}>
+                            {cat}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Problem Statement*
-              </label>
-              <textarea
+              <FormField
+                control={form.control}
                 name="problemStatement"
-                value={formData.problemStatement}
-                onChange={handleChange}
-                required
-                rows={3}
-                className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Problem Statement*</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="What problem does this idea solve?"
+                        rows={3}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Proposed Solution*
-              </label>
-              <textarea
+              <FormField
+                control={form.control}
                 name="proposedSolution"
-                value={formData.proposedSolution}
-                onChange={handleChange}
-                required
-                rows={3}
-                className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Proposed Solution*</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="How does your idea solve this problem?"
+                        rows={3}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description
-              </label>
-              <textarea
+              <FormField
+                control={form.control}
                 name="description"
-                value={formData.description}
-                onChange={handleChange}
-                rows={3}
-                className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Additional details about your idea"
+                        rows={3}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
+
+              <ImageUploader onImagesChange={setImages} />
             </div>
 
-            <ImageUploader onImagesChange={setImages} />
-          </div>
-
-          <div className="flex justify-end pt-4">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
-            >
-              {isSubmitting ? (
-                <span className="flex items-center">
-                  <svg
-                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Saving...
-                </span>
-              ) : (
-                "Save Draft"
-              )}
-            </button>
-          </div>
-        </form>
+            <div className="flex justify-end pt-4">
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? (
+                  <>
+                    <svg
+                      className="animate-spin -ml-1 mr-2 h-4 w-4"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Saving...
+                  </>
+                ) : (
+                  "Save Draft"
+                )}
+              </Button>
+            </div>
+          </form>
+        </Form>
       </div>
     </div>
   );

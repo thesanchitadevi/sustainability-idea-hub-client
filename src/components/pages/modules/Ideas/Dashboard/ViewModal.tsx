@@ -2,7 +2,7 @@
 "use client";
 import { IIdea } from "@/types";
 import { IdeaStatus } from "@/types";
-import { ArrowLeft, ArrowRight, CrossIcon, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import React, { useState } from "react";
 
 interface ViewModalProps {
@@ -143,6 +143,22 @@ const ViewModal: React.FC<ViewModalProps> = ({ idea, isOpen, onClose }) => {
               </h3>
               <p className="text-gray-700 whitespace-pre-line">
                 {idea.description || "No description provided"}
+              </p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h3 className="font-semibold text-lg mb-3 text-gray-800 border-b pb-2">
+                Problem Statement
+              </h3>
+              <p className="text-gray-700 whitespace-pre-line">
+                {idea.problem_statement || "No description provided"}
+              </p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h3 className="font-semibold text-lg mb-3 text-gray-800 border-b pb-2">
+                Proposed Solution
+              </h3>
+              <p className="text-gray-700 whitespace-pre-line">
+                {idea.proposed_solution || "No description provided"}
               </p>
             </div>
 

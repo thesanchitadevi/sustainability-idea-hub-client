@@ -28,7 +28,6 @@ export default function MemberIdeasPage() {
     const fetchIdeas = async () => {
       try {
         const user = await getCurrentUser();
-        console.log("user", user);
 
         if (!user) {
           router.push("/login");
@@ -42,11 +41,8 @@ export default function MemberIdeasPage() {
 
         // Additional client-side filtering as a safeguard
         const filteredIdeas = userIdeas.filter((idea) => {
-          console.log("idea.user_id", idea.user_id, "user.id", user.id);
-
           return idea.user_id === user.id;
         });
-        console.log("filteredIdeas", filteredIdeas);
 
         setIdeas(filteredIdeas);
       } catch (error) {
@@ -174,7 +170,9 @@ export default function MemberIdeasPage() {
                     </button>
                     {idea.status === "DRAFT" && (
                       <button
-                        onClick={() => router.push(`/idea/edit/${idea.id}`)}
+                        onClick={() =>
+                          router.push(`/dashboard/member/my-ideas/${idea.id}`)
+                        }
                         className="text-green-600 hover:underline mr-2 cursor-pointer"
                       >
                         <Edit className="w-4 h-4 inline-block mr-1" />

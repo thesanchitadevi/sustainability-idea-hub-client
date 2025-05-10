@@ -1,6 +1,7 @@
 "use server";
 import { IIdea } from "@/types";
 import { cookies } from "next/headers";
+import { getCookie } from "cookies-next";
 
 interface ApiResponse {
   success: boolean;
@@ -29,8 +30,8 @@ export const createIdea = async (formData: FormData) => {
     });
 
     const data = await response.json();
-    console.log({data});
-    
+    console.log({ data });
+
     return data;
   } catch (error) {
     console.error("Error in createIdea:", error);
@@ -136,3 +137,23 @@ export async function getIdeaById(id: string): Promise<IIdea | null> {
     return null;
   }
 }
+
+export const updateIdeaById = async (id: string, data: Partial<IIdea>) => {
+  const accessToken = (await cookies()).get("accessToken")?.value;
+  console.log("Access Token in update:", accessToken);
+
+  const res = await fetch(`${BASE_URL}/idea/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: accessToken,
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+    cache: "no-store",
+  });
+
+  const updatedIdea = await res.json();
+  console.log("Updated Idea:", updatedIdea);
+  return updatedIdea;
+};
