@@ -19,6 +19,7 @@ export const getCurrentUser = async () => {
       id: decoded.userId,
       name: decoded.name,
       email: decoded.email,
+      role:decoded.role
     };
   } catch (error) {
     console.error("Error decoding token:", error);
