@@ -5,7 +5,7 @@ import { IdeaStatus, IIdea } from "@/types";
 import { getCurrentUser } from "@/service/auth";
 import { getAllIdeas } from "@/lib/api/ideas/action";
 import { Edit, EyeIcon, Trash } from "lucide-react";
-import ViewModal from "@/components/pages/modules/Ideas/ViewModal";
+import ViewModal from "@/components/pages/modules/Ideas/Dashboard/ViewModal";
 
 export default function MemberIdeasPage() {
   const [ideas, setIdeas] = useState<IIdea[]>([]);
@@ -167,7 +167,7 @@ export default function MemberIdeasPage() {
                   </td>
                   <td className="py-2 px-4 border text-center">
                     <button
-                      onClick={() => router.push(`/idea/${idea.id}`)}
+                      onClick={() => openModal(idea)}
                       className="text-blue-600 hover:underline mr-2 cursor-pointer"
                     >
                       <EyeIcon className="w-4 h-4 inline-block mr-1" />

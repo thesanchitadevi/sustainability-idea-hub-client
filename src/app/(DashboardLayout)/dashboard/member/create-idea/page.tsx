@@ -1,4 +1,4 @@
-import CreateIdeaForm from "@/components/pages/modules/Ideas/CreateIdeaForm";
+import CreateIdeaForm from "@/components/pages/modules/Ideas/Dashboard/CreateIdeaForm";
 import React from "react";
 
 const CreateIdeaPage = () => {
