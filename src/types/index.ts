@@ -43,3 +43,11 @@ export interface IAllUser {
   createdAt: string; 
   updatedAt: string; 
 }
+
+export interface ICurrentUser {
+  email: string;
+  exp: number;    
+  iat: number;   
+  role: string; 
+  userId: string; 
+}
