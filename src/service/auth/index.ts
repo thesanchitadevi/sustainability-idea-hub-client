@@ -105,3 +105,7 @@ export const changeUserRole = async (id: string, data: { role: string }) => {
     return Error(error);
   }
 };
+
+export const logOut = async() => {
+  (await cookies()).delete('accessToken');
+}
