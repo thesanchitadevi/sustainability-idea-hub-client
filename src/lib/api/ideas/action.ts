@@ -1,7 +1,6 @@
 "use server";
 import { IIdea } from "@/types";
 import { cookies } from "next/headers";
-import { getCookie } from "cookies-next";
 
 interface ApiResponse {
   success: boolean;
@@ -140,7 +139,6 @@ export async function getIdeaById(id: string): Promise<IIdea | null> {
 
 export const updateIdeaById = async (id: string, data: Partial<IIdea>) => {
   const accessToken = (await cookies()).get("accessToken")?.value;
-  console.log("Access Token in update:", accessToken);
 
   const res = await fetch(`${BASE_URL}/idea/${id}`, {
     method: "PATCH",
@@ -156,4 +154,31 @@ export const updateIdeaById = async (id: string, data: Partial<IIdea>) => {
   const updatedIdea = await res.json();
   console.log("Updated Idea:", updatedIdea);
   return updatedIdea;
+};
+
+export const deleteIdeaById = async (id: string): Promise<void> => {
+  const accessToken = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const response = await fetch(`${BASE_URL}/idea/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: accessToken,
+      },
+    });
+
+    console.log("Delete response:", response);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to delete idea");
+    }
+
+    return;
+  } catch (error) {
+    console.error("Error deleting idea:", error);
+    throw error;
+  }
 };

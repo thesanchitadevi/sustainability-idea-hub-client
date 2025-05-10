@@ -1,7 +1,7 @@
 "use client";
 
 import { createIdea } from "@/lib/api/ideas/action";
-import { IdeaCategory } from "@/types";
+import { IdeaCategory, IdeaStatus } from "@/types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -33,14 +33,8 @@ const formSchema = z.object({
   problemStatement: z.string().min(1, "Problem statement is required"),
   proposedSolution: z.string().min(1, "Proposed solution is required"),
   description: z.string().optional(),
-  status: z.enum(["DRAFT", "PUBLISHED"]),
-  category: z.enum([
-    "ENERGY",
-    "TRANSPORTATION",
-    "WASTE_MANAGEMENT",
-    "WATER",
-    "OTHER",
-  ]),
+  status: z.enum(["DRAFT", "APPROVED", "REJECT", "UNDER_REVIEW"]),
+  category: z.enum(["ENERGY", "WASTE", "TRANSPORTATION"]),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -56,8 +50,8 @@ const CreateIdeaForm = () => {
       problemStatement: "",
       proposedSolution: "",
       description: "",
-      status: "DRAFT",
-      category: "ENERGY",
+      status: "DRAFT" as IdeaStatus,
+      category: "ENERGY" as IdeaCategory,
     },
   });
 
