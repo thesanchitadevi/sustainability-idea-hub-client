@@ -6,7 +6,7 @@ const authRoutes = ['/login', '/register'];
 
 const roleBasedPrivateRoutes = {
     admin:[/^\/dashboard\/admin/],
-    member:[/^\/\dashboard\/members/],
+    member:[/^\/dashboard\/member/],
   
 }
 type Role = keyof typeof roleBasedPrivateRoutes;
@@ -18,8 +18,7 @@ export const  middleware = async(req: NextRequest) => {
    
 
     const {pathname}= req.nextUrl;
-    console.log("pathname", pathname);
-console.log("user role", user?.role);
+ 
 
     if(!user) {
         if(authRoutes.includes(pathname)) {
@@ -32,7 +31,11 @@ console.log("user role", user?.role);
         }
     }
     
-    const role = user?.role?.toLowerCase() as Role;
+    let role = user?.role?.toLowerCase() ;
+    // console.log(role)
+    if(role === 'members') role = 'member';
+    // console.log(role)
+
     if(user?.role && roleBasedPrivateRoutes[role as Role]) {
         const routes = roleBasedPrivateRoutes[role as Role];
         if(routes.some(route => pathname.match(route))) {

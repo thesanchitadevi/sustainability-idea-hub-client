@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { ICurrentUser } from "@/types";
+import { logOut } from "@/service/auth";
 
 export function Navbar({user} : {user : ICurrentUser}) {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,6 +15,10 @@ export function Navbar({user} : {user : ICurrentUser}) {
   let role;
   if(user) {
     role =  user?.role === 'ADMIN' ? 'admin' : 'member'
+  }
+
+  const handleLogout = () => {
+    logOut();
   }
   // console.log(user)
   const navLinks = [
@@ -70,9 +75,9 @@ export function Navbar({user} : {user : ICurrentUser}) {
                 </Link>
               </>
             )}
-            <Button variant="outline" className=" cursor-pointer text-lg">
+           { user && <Button onClick={handleLogout} variant="outline" className=" cursor-pointer text-lg">
                         Logout
-            </Button>
+            </Button>}
           </div>
 
           {/* Mobile Toggle */}
@@ -123,9 +128,9 @@ export function Navbar({user} : {user : ICurrentUser}) {
                     </Link>
                   </>
                 )}
-                <Button variant="outline" className=" cursor-pointer w-full text-lg">
+                { user && <Button onClick={handleLogout} variant="outline" className=" cursor-pointer w-full text-lg">
                         Logout
-            </Button>
+            </Button>}
                 
               </div>
             </div>

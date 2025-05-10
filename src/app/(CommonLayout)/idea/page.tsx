@@ -1,9 +1,13 @@
 import { IdeaCard } from "@/components/pages/modules/Ideas/IdeaCard";
 import { getAllIdeas } from "@/lib/api/ideas/action";
+import { getCurrentUser } from "@/service/auth";
 import React from "react";
 
 const IdeasPage = async () => {
-  const ideas = await getAllIdeas();
+  const user = await  getCurrentUser();
+  const ideas = await getAllIdeas(user?.id);
+
+  console.log(ideas)
 
   return (
     <section>
@@ -25,6 +29,8 @@ const IdeasPage = async () => {
             <p>No ideas available at the moment.</p>
           </div>
         )}
+
+        
 
         {/* Idea Cards Grid */}
         {ideas.length > 0 && (
