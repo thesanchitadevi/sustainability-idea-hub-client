@@ -11,12 +11,15 @@ export function Navbar({user} : {user : ICurrentUser}) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
-
+  let role;
+  if(user) {
+    role =  user?.role === 'ADMIN' ? 'admin' : 'member'
+  }
   // console.log(user)
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Ideas", href: "/idea" },
-    { name: "Dashboard", href: "/dashboard" },
+    { name: "Dashboard", href: `/dashboard/${role}` },
     { name: "About", href: "/about" },
     { name: "Blog", href: "/blog" },
   ];
