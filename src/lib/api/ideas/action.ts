@@ -72,25 +72,25 @@ export async function getFeaturedIdeas(): Promise<IIdea[]> {
 
 export async function getAllIdeas(
   userId: string,
-  options?: {
-    status?: string;
-    isPublished?: boolean;
-    sortBy?: "newest" | "oldest";
-    limit?: number;
-  }
+  params?: Record<string, string>
 ): Promise<IIdea[]> {
   try {
-    // Construct query parameters based on options
     const queryParams = new URLSearchParams();
-
     queryParams.append("userId", userId);
 
-    if (options?.status) {
-      queryParams.append("status", options.status);
-    }
-
-    if (options?.isPublished !== undefined) {
-      queryParams.append("isPublished", options.isPublished.toString());
+    // Add all provided parameters to the query
+    if (params) {
+      for (const [key, value] of Object.entries(params)) {
+        // Skip 'all' values for filters
+        if (value !== "all") {
+          // Convert published filter to boolean string
+          if (key === "isPublished") {
+            queryParams.append(key, value === "published" ? "true" : "false");
+          } else {
+            queryParams.append(key, value);
+          }
+        }
+      }
     }
 
     const url = `${BASE_URL}/idea?${queryParams.toString()}`;
@@ -101,8 +101,6 @@ export async function getAllIdeas(
     }
 
     const result: ApiResponse = await response.json();
-    // console.log("Result:", result);
-
     return result?.data?.data || [];
   } catch (error) {
     console.error("Failed to fetch ideas:", error);
