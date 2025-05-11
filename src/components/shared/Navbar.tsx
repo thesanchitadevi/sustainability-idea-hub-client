@@ -8,26 +8,31 @@ import { Button } from "../ui/button";
 import { ICurrentUser } from "@/types";
 import { logOut } from "@/service/auth";
 
-export function Navbar({user} : {user : ICurrentUser}) {
+export function Navbar({ user }: { user: ICurrentUser }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
   let role;
-  if(user) {
-    role =  user?.role === 'ADMIN' ? 'admin' : 'member'
+  if (user) {
+    role = user?.role === "ADMIN" ? "admin" : "member";
   }
 
   const handleLogout = () => {
     logOut();
-  }
-  // console.log(user)
-  const navLinks = [
+  };
+
+  // Base nav links that are always shown
+  const baseNavLinks = [
     { name: "Home", href: "/" },
     { name: "Ideas", href: "/idea" },
-    { name: "Dashboard", href: `/dashboard/${role}` },
     { name: "About", href: "/about" },
     { name: "Blog", href: "/blog" },
   ];
+
+  // Add Dashboard link only if user exists
+  const navLinks = user
+    ? [...baseNavLinks, { name: "Dashboard", href: `/dashboard/${role}` }]
+    : baseNavLinks;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
@@ -75,9 +80,15 @@ export function Navbar({user} : {user : ICurrentUser}) {
                 </Link>
               </>
             )}
-           { user && <Button onClick={handleLogout} variant="outline" className=" cursor-pointer text-lg">
-                        Logout
-            </Button>}
+            {user && (
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                className=" cursor-pointer text-lg"
+              >
+                Logout
+              </Button>
+            )}
           </div>
 
           {/* Mobile Toggle */}
@@ -93,7 +104,7 @@ export function Navbar({user} : {user : ICurrentUser}) {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 bg-background border-t shadow-lg">
+          <div className="md:hidden absolute top-20 left-0 right-0 bg-background border-t shadow-lg">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 space-y-4">
               {" "}
               {/* Consistent max-w and padding */}
@@ -114,10 +125,12 @@ export function Navbar({user} : {user : ICurrentUser}) {
               <div className="pt-4 border-t space-y-2">
                 {user ? (
                   <Link href="/profile">
-                    <Button className="w-full cursor-pointer">My Profile</Button>
+                    <Button className="w-full cursor-pointer">
+                      My Profile
+                    </Button>
                   </Link>
                 ) : (
-                  <>
+                  <div className="flex flex-col gap-2">
                     <Link href="/login">
                       <Button variant="outline" className="w-full">
                         Login
@@ -126,12 +139,17 @@ export function Navbar({user} : {user : ICurrentUser}) {
                     <Link href="/register">
                       <Button className="w-full">Register</Button>
                     </Link>
-                  </>
+                  </div>
                 )}
-                { user && <Button onClick={handleLogout} variant="outline" className=" cursor-pointer w-full text-lg">
-                        Logout
-            </Button>}
-                
+                {user && (
+                  <Button
+                    onClick={handleLogout}
+                    variant="outline"
+                    className=" cursor-pointer w-full text-lg"
+                  >
+                    Logout
+                  </Button>
+                )}
               </div>
             </div>
           </div>

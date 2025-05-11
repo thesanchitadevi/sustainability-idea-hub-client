@@ -1,3 +1,4 @@
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export const IdeaCategories = () => {
@@ -36,14 +37,14 @@ export const IdeaCategories = () => {
             <Link
               key={category.name}
               href={`/ideas?category=${category.name.toLowerCase()}`}
-              className="group relative bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:border-indigo-300 transition-all duration-200 hover:shadow-md"
+              className="group relative bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:border-green-300/30 transition-all duration-200 hover:shadow-md"
             >
               <div className="flex items-start">
                 <span className="text-3xl mr-4" aria-hidden="true">
                   {category.icon}
                 </span>
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900 group-hover:text-indigo-600 transition-colors">
+                  <h3 className="text-lg font-medium text-gray-900 group-hover:text-green-600 transition-colors">
                     {category.name.charAt(0) +
                       category.name.slice(1).toLowerCase()}
                   </h3>
@@ -52,21 +53,8 @@ export const IdeaCategories = () => {
                   </p>
                 </div>
               </div>
-              <div className="absolute top-4 right-4 text-gray-300 group-hover:text-indigo-400 transition-colors">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+              <div className="absolute top-4 right-4 text-gray-300 group-hover:text-green-400 transition-colors">
+                <ArrowRight className="w-5 h-5" />
               </div>
             </Link>
           ))}

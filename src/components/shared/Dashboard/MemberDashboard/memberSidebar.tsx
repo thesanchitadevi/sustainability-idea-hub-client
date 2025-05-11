@@ -111,27 +111,38 @@ export function Sidebar2({
         )}
       >
         <div className="p-4 border-b">
-          <div className="flex items-center gap-3">
-            {currentUser?.image ? (
-              <Image
-                src={currentUser.image}
-                alt="User profile"
-                width={40}
-                height={40}
-                className="rounded-full"
-              />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                <span className="text-lg font-medium">
-                  {currentUser?.name?.charAt(0).toUpperCase() || "U"}
-                </span>
+          <div className="flex flex-col items-start gap-2">
+            {/* Logo */}
+            <Link href="/">
+              <span className="text-2xl font-semibold">
+                <span className="text-green-600 font-quicksand">Eco</span>
+                Hive
+              </span>
+            </Link>
+
+            {/* User info */}
+            <div className="flex items-center gap-3 py-3">
+              {currentUser?.image ? (
+                <Image
+                  src={currentUser.image}
+                  alt="User profile"
+                  width={20}
+                  height={20}
+                  className="rounded-full"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                  <span className="text-sm font-medium">
+                    {currentUser?.name?.charAt(0).toUpperCase() || "U"}
+                  </span>
+                </div>
+              )}
+              <div>
+                <p className="text-sm font-medium">
+                  {currentUser?.name || currentUser?.email}
+                </p>
+                <p className="text-sm text-muted-foreground">Member</p>
               </div>
-            )}
-            <div>
-              <p className="font-medium">
-                {currentUser?.name || currentUser?.email}
-              </p>
-              <p className="text-sm text-muted-foreground">Member</p>
             </div>
           </div>
         </div>
@@ -160,7 +171,7 @@ export function Sidebar2({
             disabled={isLoggingOut}
           >
             <LogOut className="w-5 h-5" />
-            <span>Logout</span>
+            <span>Log out</span>
             {isLoggingOut && <span className="ml-2 animate-spin">...</span>}
           </Button>
         </div>
