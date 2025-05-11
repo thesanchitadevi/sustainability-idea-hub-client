@@ -26,14 +26,9 @@ import { DeleteConfirmationModal } from "./DeleteModal";
 interface IdeaTableProps {
   data: IIdea[];
   onView: (idea: IIdea) => void;
-  refreshData: () => void;
 }
 
-export function IdeaTable({
-  data: initialData,
-  onView,
-  refreshData,
-}: IdeaTableProps) {
+export function IdeaTable({ data: initialData, onView }: IdeaTableProps) {
   const router = useRouter();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [ideaToDelete, setIdeaToDelete] = useState<string | null>(null);

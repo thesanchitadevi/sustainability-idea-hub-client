@@ -1,9 +1,9 @@
 "use client";
 
 import { Topbar } from "@/components/shared/Dashboard/AdminDashboard/TopBar";
-import { Sidebar2 } from "@/components/shared/Dashboard/MemberDashboard/memberSidebar";
 import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/shared/Dashboard/AdminDashboard/sidebar";
+import { Sidebar2 } from "@/components/shared/Dashboard/MemberDashboard/memberSidebar";
 import { getCurrentUser } from "@/service/auth";
 import Spinner from "@/components/ui/Spinner";
 
