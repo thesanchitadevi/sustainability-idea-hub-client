@@ -15,7 +15,7 @@ export function Testimonials() {
       try {
         setIsLoading(true);
         const ideas = await getAllIdeas("public", {
-          isPublished: "true",
+          isPublished: true,
           sortBy: "newest",
         });
 

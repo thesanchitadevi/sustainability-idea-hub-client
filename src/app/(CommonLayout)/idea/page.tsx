@@ -121,7 +121,7 @@ const IdeasPage = () => {
     setSortOption("newest");
     setCategoryFilter("all");
     setIsPaidFilter("all");
-    router.push("/ideas");
+    router.push("/idea");
   };
 
   const updateUrlParams = () => {

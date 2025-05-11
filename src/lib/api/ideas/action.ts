@@ -72,25 +72,26 @@ export async function getFeaturedIdeas(): Promise<IIdea[]> {
 
 export async function getAllIdeas(
   userId: string,
-  params?: Record<string, string>
+  options?: {
+    status?: string;
+    isPublished?: boolean;
+    sortBy?: "newest" | "oldest";
+    searchTerm?: string;
+    category?: string;
+    isPaid?: string;
+    limit?: number;
+  }
 ): Promise<IIdea[]> {
   try {
     const queryParams = new URLSearchParams();
     queryParams.append("userId", userId);
 
-    // Add all provided parameters to the query
-    if (params) {
-      for (const [key, value] of Object.entries(params)) {
-        // Skip 'all' values for filters
-        if (value !== "all") {
-          // Convert published filter to boolean string
-          if (key === "isPublished") {
-            queryParams.append(key, value === "published" ? "true" : "false");
-          } else {
-            queryParams.append(key, value);
-          }
-        }
-      }
+    if (options?.status) {
+      queryParams.append("status", options.status);
+    }
+
+    if (options?.isPublished !== undefined) {
+      queryParams.append("isPublished", options.isPublished.toString());
     }
 
     const url = `${BASE_URL}/idea?${queryParams.toString()}`;

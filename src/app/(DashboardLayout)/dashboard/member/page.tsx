@@ -18,6 +18,8 @@ const MemberDashboard = () => {
       try {
         const user = await getCurrentUser();
 
+        console.log("user", user);
+
         if (!user) {
           router.push("/login");
           return;
@@ -30,6 +32,8 @@ const MemberDashboard = () => {
         const filteredIdeas = userIdeas.filter((idea) => {
           return idea.user_id === user.id;
         });
+
+        console.log("filteredIdeas", filteredIdeas);
 
         setIdeas(filteredIdeas);
       } catch (error) {

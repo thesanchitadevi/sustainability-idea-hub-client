@@ -4,19 +4,29 @@ import { IdeaGallery } from "./IdeaGallery";
 import { format } from "date-fns";
 import { ArrowBigUp, User } from "lucide-react";
 import { CategoryBadge } from "./CategoryBadge";
-import { StatusBadge } from "./StatusBadge";
 
 export function IdeaDetailsCard({ idea }: { idea: IIdea }) {
   return (
     <div className="w-full bg-white rounded-xl shadow-md overflow-hidden">
       {/* Header Section */}
-      <div className="p-6 border-b">
+      <div className="p-6 border-b ">
         <div className="flex justify-between items-start">
           <div className="w-full">
-            <h1 className="text-2xl font-bold text-gray-800">{idea.title}</h1>
+            <h1 className="text-2xl font-bold text-gray-800">
+              {idea.title} <CategoryBadge category={idea.category} />
+            </h1>
             <div className="flex flex-wrap gap-2 mt-3 items-center">
-              <CategoryBadge category={idea.category} />
-              <StatusBadge status={idea.status} />
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                  <User className="h-4 w-4 text-gray-500" />
+                </div>
+                <div>
+                  <p className="text-medium text-gray-600">
+                    {idea.user?.name || "Community Member"} <br />
+                  </p>
+                </div>
+              </div>
+
               {idea.isPaid && (
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
                   Premium Idea
@@ -26,7 +36,9 @@ export function IdeaDetailsCard({ idea }: { idea: IIdea }) {
           </div>
           <div className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full min-w-fit">
             <ArrowBigUp className="h-4 w-4 text-green-600" />
-            <span className="font-medium">{idea.votes || 0} votes</span>
+            <span className="font-medium">
+              {idea.votes?.UP_VOTE || 0} votes
+            </span>
           </div>
         </div>
       </div>
@@ -97,19 +109,6 @@ export function IdeaDetailsCard({ idea }: { idea: IIdea }) {
                 {idea.isPublished ? "Public" : "Private"}
               </p>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Footer with Author Info */}
-      <div className="bg-gray-50 p-6 border-t">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-            <User className="h-5 w-5 text-gray-500" />
-          </div>
-          <div>
-            <p className="font-medium text-gray-700">Submitted by</p>
-            <p className="text-sm text-gray-600"></p>
           </div>
         </div>
       </div>
