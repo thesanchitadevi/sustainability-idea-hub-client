@@ -11,7 +11,8 @@ import { cn } from '@/lib/utils'
 const links = [
   { href: '/dashboard/admin', label: 'Member Dashboard', icon: LayoutDashboard },
   { href: '/dashboard/admin/user', label: 'Users', icon: Users },
-  { href: '/dashboard/admin/reports', label: 'Reports', icon: FileText },
+  { href: '/dashboard/admin/allIdea', label: 'All Idea', icon: FileText },
+  
 ]
 
 export function Sidebar({ setSidebarOpen }: { setSidebarOpen: (open: boolean) => void }) {

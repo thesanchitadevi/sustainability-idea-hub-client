@@ -60,3 +60,41 @@ export interface ICurrentUser {
   role: string; 
   userId: string; 
 }
+
+
+
+
+
+// idea types
+export interface Image {
+  id: string;
+  idea_id: string;
+  imageUrl: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  profile_image: string;
+}
+
+export interface IdeaDetails {
+  id: string;
+  title: string;
+  description: string;
+  problem_statement: string;
+  proposed_solution: string;
+  category: string;
+  isPaid: boolean;
+  isPublished: boolean;
+  status: 'UNDER_REVIEW' | 'APPROVED' | 'REJECT';
+  rejectionFeedback: string | null;
+  createdAt: string;
+  updatedAt: string;
+  images: Image[];
+  user_id: string;
+  user: User;
+}
