@@ -12,6 +12,9 @@ import {
   CheckCircle,
   FileText,
   AlertCircle,
+  Pen,
+  CheckIcon,
+  Vote,
 } from "lucide-react";
 import React, { useState } from "react";
 
@@ -190,6 +193,47 @@ const ViewModal: React.FC<ViewModalProps> = ({ idea, isOpen, onClose }) => {
               </p>
             </div>
 
+            {/* Feedback */}
+            <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
+              <h3 className="font-semibold text-lg mb-3 text-gray-900 flex items-center gap-2">
+                <CheckIcon className="w-5 h-5 text-green-500" />
+                Feedback
+              </h3>
+              <p className="text-gray-700 whitespace-pre-line">
+                {idea.rejectionFeedback || (
+                  <span className="text-gray-400 italic">
+                    No feedback provided
+                  </span>
+                )}
+              </p>
+            </div>
+            {/* User Info */}
+            <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
+              <h3 className="font-semibold text-lg mb-3 text-gray-900 flex items-center gap-2">
+                <Pen className="w-5 h-5 text-blue-500" />
+                Published By
+              </h3>
+              <div className="flex justify-start items-center gap-4">
+                <img
+                  src={idea.user?.imageUrl || "/src/assets/user.jpg"}
+                  alt={idea.user?.name || "User"}
+                  className="w-12 h-12 rounded-full mb-3"
+                />
+                <div>
+                  <p className="text-gray-700 whitespace-pre-line">
+                    {idea.user.name || (
+                      <span className="text-gray-400 italic">No user info</span>
+                    )}
+                  </p>
+                  <p className="text-gray-700 whitespace-pre-line">
+                    {idea.user.email || (
+                      <span className="text-gray-400 italic">No user info</span>
+                    )}
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Details */}
             <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
               <h3 className="font-semibold text-lg mb-3 text-gray-900">
@@ -229,6 +273,18 @@ const ViewModal: React.FC<ViewModalProps> = ({ idea, isOpen, onClose }) => {
                   <div>
                     <p className="text-sm text-gray-500">Price</p>
                     <p className="font-medium">৳ 200</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-purple-50 text-purple-600">
+                    <Vote className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Votes</p>
+                    <p className="font-medium">
+                      {idea.votes || 0}{" "}
+                      <span className="text-gray-400 text-xs">(upvotes)</span>
+                    </p>
                   </div>
                 </div>
 

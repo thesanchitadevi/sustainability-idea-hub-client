@@ -26,9 +26,14 @@ import { DeleteConfirmationModal } from "./DeleteModal";
 interface IdeaTableProps {
   data: IIdea[];
   onView: (idea: IIdea) => void;
+  refreshData: () => void;
 }
 
-export function IdeaTable({ data: initialData, onView }: IdeaTableProps) {
+export function IdeaTable({
+  data: initialData,
+  onView,
+  refreshData,
+}: IdeaTableProps) {
   const router = useRouter();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [ideaToDelete, setIdeaToDelete] = useState<string | null>(null);
@@ -58,32 +63,29 @@ export function IdeaTable({ data: initialData, onView }: IdeaTableProps) {
   };
 
   const handleSubmitForReview = async (ideaId: string) => {
-    // Only process if we're not already submitting this idea
     if (submittingIdeaId === ideaId) return;
 
-    // Find the idea and check if it's in draft status
     const idea = data.find((item) => item.id === ideaId);
     if (!idea || idea.status !== IdeaStatus.DRAFT) return;
 
     setSubmittingIdeaId(ideaId);
 
     try {
-      // Call your API function
-      const submittedIdea = await ideaSubmitReview(ideaId);
+      const response = await ideaSubmitReview(ideaId);
 
-      // Update the local state to reflect the change
-      setData((prevData) =>
-        prevData.map((item) =>
-          item.id === ideaId
-            ? {
-                ...item,
-                status: submittedIdea.status || "PENDING",
-              }
-            : item
-        )
-      );
+      if (response && response.data) {
+        // Update local state with the response data
+        setData((prevData) =>
+          prevData.map((item) =>
+            item.id === ideaId ? { ...item, ...response.data } : item
+          )
+        );
+        toast.success("Idea submitted for review successfully");
 
-      toast.success("Idea submitted for review successfully");
+        router.refresh();
+      } else {
+        throw new Error("Invalid response from server");
+      }
     } catch (error) {
       console.error("Error submitting idea:", error);
       toast.error("Failed to submit idea for review");
@@ -106,62 +108,38 @@ export function IdeaTable({ data: initialData, onView }: IdeaTableProps) {
       cell: ({ row }) => {
         const idea = row.original;
         const status = idea.status as IdeaStatus;
-        const isSubmitting = submittingIdeaId === idea.id;
 
-        // Determine display status text
-        let displayStatus: string = status;
-        if (status === IdeaStatus.UNDER_REVIEW) {
-          displayStatus = "PENDING";
-        } else if (isSubmitting && status === IdeaStatus.DRAFT) {
-          displayStatus = "PENDING";
-        }
+        const statusMap = {
+          [IdeaStatus.DRAFT]: {
+            bg: "bg-amber-100",
+            text: "text-amber-800",
+            label: "DRAFT",
+          },
+          [IdeaStatus.UNDER_REVIEW]: {
+            bg: "bg-blue-100",
+            text: "text-blue-800",
+            label: "PENDING",
+          },
+          [IdeaStatus.APPROVED]: {
+            bg: "bg-green-100",
+            text: "text-green-800",
+            label: "APPROVED",
+          },
+          [IdeaStatus.REJECT]: {
+            bg: "bg-red-100",
+            text: "text-red-800",
+            label: "REJECTED",
+          },
+        };
+
+        const currentStatus = statusMap[status] || statusMap[IdeaStatus.DRAFT];
 
         return (
-          <button
-            onClick={() => handleSubmitForReview(idea.id)}
-            disabled={status !== IdeaStatus.DRAFT || isSubmitting}
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              status === IdeaStatus.APPROVED
-                ? "bg-green-100 text-green-800"
-                : status === IdeaStatus.DRAFT
-                ? `bg-amber-100 text-amber-800 ${
-                    !isSubmitting && "hover:bg-amber-200 cursor-pointer"
-                  }`
-                : "bg-blue-100 text-blue-800"
-            } ${
-              status === IdeaStatus.DRAFT && !isSubmitting
-                ? "cursor-pointer"
-                : "cursor-default"
-            }`}
+          <span
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${currentStatus.bg} ${currentStatus.text}`}
           >
-            {isSubmitting ? (
-              <span className="flex items-center">
-                <svg
-                  className="animate-spin -ml-1 mr-1 h-3 w-3 text-amber-800"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                Submitting...
-              </span>
-            ) : (
-              displayStatus
-            )}
-          </button>
+            {currentStatus.label}
+          </span>
         );
       },
     },
@@ -197,6 +175,66 @@ export function IdeaTable({ data: initialData, onView }: IdeaTableProps) {
           {new Date(row.getValue("createdAt")).toLocaleDateString()}
         </div>
       ),
+    },
+    {
+      id: "submit",
+      header: "Submit",
+      cell: ({ row }) => {
+        const idea = row.original;
+        const isSubmitting = submittingIdeaId === idea.id;
+
+        // If status is not DRAFT, show muted button
+        if (idea.status !== IdeaStatus.DRAFT) {
+          return (
+            <Button
+              variant="outline"
+              size="sm"
+              disabled
+              className="h-8 opacity-50 cursor-not-allowed"
+            >
+              Submitted
+            </Button>
+          );
+        }
+
+        return (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleSubmitForReview(idea.id)}
+            disabled={isSubmitting}
+            className="h-8"
+          >
+            {isSubmitting ? (
+              <>
+                <svg
+                  className="animate-spin -ml-1 mr-2 h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Submitting...
+              </>
+            ) : (
+              "Submit for Review"
+            )}
+          </Button>
+        );
+      },
     },
     {
       id: "actions",

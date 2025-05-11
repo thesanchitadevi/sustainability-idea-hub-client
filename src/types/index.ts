@@ -36,6 +36,7 @@ export interface IIdea {
   isPaid: boolean;
   status: IdeaStatus;
   isPublished: boolean;
+  rejectionFeedback: string | null;
   category: IdeaCategory;
   images: IIdeaImage[];
   user: IUser;
@@ -55,15 +56,11 @@ export interface IAllUser {
 
 export interface ICurrentUser {
   email: string;
-  exp: number;    
-  iat: number;   
-  role: string; 
-  userId: string; 
+  exp: number;
+  iat: number;
+  role: string;
+  userId: string;
 }
-
-
-
-
 
 // idea types
 export interface Image {
@@ -90,7 +87,7 @@ export interface IdeaDetails {
   category: string;
   isPaid: boolean;
   isPublished: boolean;
-  status: 'UNDER_REVIEW' | 'APPROVED' | 'REJECT';
+  status: "UNDER_REVIEW" | "APPROVED" | "REJECT";
   rejectionFeedback: string | null;
   createdAt: string;
   updatedAt: string;
