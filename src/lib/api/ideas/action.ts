@@ -7,7 +7,7 @@ interface ApiResponse {
   data: IIdea[];
 }
 
-const BASE_URL =
+export const BASE_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api";
 
 export const createIdea = async (formData: FormData) => {
@@ -136,18 +136,3 @@ export async function getIdeaById(id: string): Promise<IIdea | null> {
     return null;
   }
 }
-
-export const getIdeaComments = async (ideaId: string) => {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/comment/${ideaId}`
-    );
-    const result = await res.json();
-    if (result?.success) {
-      return result?.data || [];
-    }
-  } catch (error) {
-    console.error("Error fetching comments:", error);
-    throw error;
-  }
-};
