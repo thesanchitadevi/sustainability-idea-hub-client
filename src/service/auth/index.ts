@@ -27,6 +27,8 @@ export const getCurrentUser = async () => {
   }
 };
 
+
+
 export const getAllUsers = async (
   page: string | number,
   limit: string | number
@@ -34,6 +36,29 @@ export const getAllUsers = async (
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/user?page=${page}&limit=${limit}`,
+      {
+        next: {
+          tags: ["USERS"],
+        },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: (await cookies()).get("accessToken")!.value,
+        },
+      }
+    );
+
+    const result = await res.json();
+
+    // console.log(result)
+    return result;
+  } catch (error: any) {
+    return Error(error);
+  }
+};
+export const getMe = async () => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/me`,
       {
         next: {
           tags: ["USERS"],
