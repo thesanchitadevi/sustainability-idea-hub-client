@@ -6,7 +6,8 @@ export default async function IdeaDetailsPage({
 }: {
   params: { id: string };
 }) {
-  const idea = await getIdeaById(params.id);
+  const { id } = await params;
+  const idea = await getIdeaById(id);
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

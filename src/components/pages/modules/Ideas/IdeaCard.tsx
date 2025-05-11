@@ -1,20 +1,20 @@
 "use client";
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { IIdea } from "@/types";
-import { CategoryBadge } from "./CategoryBadge";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ThumbsUp, ThumbsDown } from "lucide-react";
+import { IIdea } from "@/types";
+import { ThumbsDown, ThumbsUp } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { CategoryBadge } from "./CategoryBadge";
 
 interface IdeaCardProps {
   idea: IIdea;
@@ -31,7 +31,7 @@ export function IdeaCard({
 }: IdeaCardProps) {
   const router = useRouter();
 
-  if (!idea.isPublished) return null;
+  // if (!idea.isPublished) return null;
 
   const displayImage =
     idea.images?.length > 0
