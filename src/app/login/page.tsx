@@ -18,7 +18,13 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold">
-            Sustainability Idea Hub
+            {/* Logo */}
+            <Link href="/" className="flex justify-center items-center gap-1">
+              <span className="text-lg font-semibold">
+                <span className="text-green-600 font-quicksand">Eco</span>
+                Hive
+              </span>
+            </Link>
           </CardTitle>
           <CardDescription>Enter your credentials to sign in</CardDescription>
         </CardHeader>

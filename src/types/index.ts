@@ -24,12 +24,17 @@ interface IUser {
   role?: string;
 }
 
+interface IVotes {
+  UP_VOTE: number;
+  DOWN_VOTE: number;
+}
+
 export interface IIdea {
   id: string;
   user_id: string;
   title: string;
   price: number;
-  votes: number;
+  votes: IVotes;
   problem_statement: string;
   proposed_solution: string;
   description: string;

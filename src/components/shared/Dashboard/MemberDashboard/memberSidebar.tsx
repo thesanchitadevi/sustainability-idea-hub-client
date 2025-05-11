@@ -13,7 +13,8 @@ import {
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { logOut } from "@/service/auth";
+import { logOut, getCurrentUser } from "@/service/auth";
+import Image from "next/image";
 
 const navLinks = [
   {
@@ -42,12 +43,32 @@ export function Sidebar2({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [currentUser, setCurrentUser] = useState<{
+    id: string;
+    email: string;
+    name: string;
+    image?: string;
+  } | null>(null);
 
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
     setSidebarOpen(open);
   }, [open, setSidebarOpen]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await getCurrentUser();
+        console.log("user", user);
+
+        setCurrentUser(user);
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      }
+    };
+    fetchUser();
+  }, []);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -90,7 +111,29 @@ export function Sidebar2({
         )}
       >
         <div className="p-4 border-b">
-          <h1 className="text-xl font-semibold">Idea Portal</h1>
+          <div className="flex items-center gap-3">
+            {currentUser?.image ? (
+              <Image
+                src={currentUser.image}
+                alt="User profile"
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                <span className="text-lg font-medium">
+                  {currentUser?.name?.charAt(0).toUpperCase() || "U"}
+                </span>
+              </div>
+            )}
+            <div>
+              <p className="font-medium">
+                {currentUser?.name || currentUser?.email}
+              </p>
+              <p className="text-sm text-muted-foreground">Member</p>
+            </div>
+          </div>
         </div>
 
         <nav className="flex-1 p-4 space-y-1">

@@ -4,10 +4,10 @@ import { getCurrentUser } from "@/service/auth";
 import React from "react";
 
 const IdeasPage = async () => {
-  const user = await  getCurrentUser();
+  const user = await getCurrentUser();
   const ideas = await getAllIdeas(user?.id);
 
-  console.log(ideas)
+  console.log(ideas);
 
   return (
     <section>
@@ -30,13 +30,15 @@ const IdeasPage = async () => {
           </div>
         )}
 
-        
-
         {/* Idea Cards Grid */}
         {ideas.length > 0 && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {ideas.map((idea) => (
-              <IdeaCard key={idea.id} idea={idea} />
+              <IdeaCard
+                key={idea.id}
+                idea={idea}
+                isAuthenticated={user !== null}
+              />
             ))}
           </div>
         )}

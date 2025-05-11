@@ -1,22 +1,33 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { VoteButton } from "./VoteButton";
+import { useRouter } from "next/navigation";
 import { IIdea } from "@/types";
 import { CategoryBadge } from "./CategoryBadge";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ThumbsUp, ThumbsDown } from "lucide-react";
 
 interface IdeaCardProps {
   idea: IIdea;
   className?: string;
   displayImageIndex?: number;
+  isAuthenticated?: boolean;
 }
 
 export function IdeaCard({
   idea,
   className = "",
   displayImageIndex = 0,
+  isAuthenticated = false,
 }: IdeaCardProps) {
   const router = useRouter();
 
@@ -30,27 +41,31 @@ export function IdeaCard({
   const handleViewIdea = (e: React.MouseEvent) => {
     if (idea.isPaid) {
       e.preventDefault();
-      if (status !== "authenticated") {
-        router.push(`/auth/signin?callbackUrl=/idea/${idea.id}`);
+      if (!isAuthenticated) {
+        router.push(`/login?callbackUrl=/idea/${idea.id}`);
       } else {
         router.push(`/idea/${idea.id}/purchase`);
       }
     }
   };
 
+  // Separate upvotes and downvotes display
+  const upvotes = idea.votes?.UP_VOTE || 0;
+  const downvotes = idea.votes?.DOWN_VOTE || 0;
+
   return (
-    <article
-      className={`group relative overflow-hidden rounded-xl border bg-white shadow-sm transition-all hover:shadow-md ${className}`}
+    <Card
+      className={`group relative h-full flex flex-col overflow-hidden transition-shadow hover:shadow-md ${className}`}
       aria-labelledby={`idea-title-${idea.id}`}
     >
-      {/* Image Section */}
-      <div className="relative h-48 overflow-hidden">
+      {/* Image Section - No padding */}
+      <div className="relative aspect-[4/3] w-full">
         {displayImage ? (
           <Image
             src={displayImage.imageUrl}
             alt={`${idea.title} featured image`}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover"
             sizes="(max-width: 768px) 100vw, 50vw"
             priority={displayImageIndex === 0}
           />
@@ -64,70 +79,85 @@ export function IdeaCard({
 
         {/* Image counter badge */}
         {idea.images?.length > 1 && (
-          <div className="absolute right-3 top-3 z-10 bg-black/80 text-white text-xs px-2 py-1 rounded-full">
+          <Badge className="absolute right-2 top-2 bg-black/80 text-white hover:bg-black/90 text-xs">
             {displayImageIndex + 1}/{idea.images.length}
+          </Badge>
+        )}
+
+        {/* Category Badge */}
+        <div className="absolute left-2 top-2">
+          <CategoryBadge category={idea.category} />
+        </div>
+
+        {/* Premium Ribbon - Fixed positioning */}
+        {idea.isPaid && (
+          <div className="absolute right-0 top-0 bg-yellow-500 text-white text-xs font-bold px-8 py-0.5 transform translate-x-6 -translate-y-1 rotate-45 origin-top-right shadow-sm z-10">
+            Premium
           </div>
         )}
       </div>
 
-      {/* Category Badge */}
-      <div className="absolute left-3 top-3 z-10">
-        <CategoryBadge category={idea.category} />
-      </div>
-
-      {/* Premium Ribbon */}
-      {idea.isPaid && (
-        <div className="absolute right-0 top-0 bg-yellow-500 text-white text-xs font-bold px-3 py-1 transform translate-x-2 translate-y-2 rotate-45 origin-top-right">
-          Premium
-        </div>
-      )}
-
-      {/* Card Content */}
-      <div className="p-5">
-        <h3
+      {/* Content Section - Tight padding */}
+      <CardHeader className="px-3 pt-3 pb-2">
+        <CardTitle
+          className="line-clamp-2 text-lg leading-tight"
           id={`idea-title-${idea.id}`}
-          className="mb-2 line-clamp-2 font-medium text-gray-900"
         >
           {idea.title}
-        </h3>
-
-        <p className="mb-4 line-clamp-3 text-sm text-gray-600">
+        </CardTitle>
+        <CardDescription className="line-clamp-2 text-sm mt-1">
           {idea.description}
-        </p>
+        </CardDescription>
+      </CardHeader>
 
-        {/* Hardcoded Price Display for Paid Ideas */}
-        {idea.isPaid && (
-          <div className="mb-4">
-            <span className="text-lg font-bold text-green-600">200 TK</span>
+      {/* Price Section - Only shown for paid ideas */}
+      {idea.isPaid && (
+        <CardContent className="px-3 py-0">
+          <div className="flex items-center justify-between border-t pt-2">
+            <div className="flex items-center gap-2">
+              <span className="text-base font-bold text-green-600">200 TK</span>
+              <Badge variant="secondary" className="text-green-600">
+                Premium Content
+              </Badge>
+            </div>
           </div>
-        )}
+        </CardContent>
+      )}
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <VoteButton initialVotes={idea.votes} ideaId={idea.id} />
+      {/* Footer - Tight padding */}
+      <CardFooter className="px-3 pb-3 pt-2">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1">
+              <ThumbsUp size={16} className="text-blue-500" />
+              <span className="text-sm font-medium">{upvotes}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <ThumbsDown size={16} className="text-red-500" />
+              <span className="text-sm font-medium">{downvotes}</span>
+            </div>
           </div>
 
           {idea.isPaid ? (
             <Button
               onClick={handleViewIdea}
               size="sm"
-              className="bg-green-600 hover:bg-green-700"
+              className="h-8 px-3 bg-green-600 hover:bg-green-700"
             >
-              {status === "authenticated"
-                ? "Purchase (200 TK)"
-                : "Login to View"}
+              {isAuthenticated ? "Purchase" : "Login"}
             </Button>
           ) : (
-            <Link
-              href={`/idea/${idea.id}`}
-              className="text-sm font-medium text-green-600 hover:text-green-800 hover:underline"
-              aria-label={`View details for ${idea.title}`}
-            >
-              View Idea →
-            </Link>
+            <Button asChild variant="outline" size="sm" className="h-8 px-3">
+              <Link
+                href={`/idea/${idea.id}`}
+                aria-label={`View details for ${idea.title}`}
+              >
+                View
+              </Link>
+            </Button>
           )}
         </div>
-      </div>
-    </article>
+      </CardFooter>
+    </Card>
   );
 }
