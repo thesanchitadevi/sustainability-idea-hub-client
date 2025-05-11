@@ -86,12 +86,11 @@ export async function getAllIdeas(
     const queryParams = new URLSearchParams();
     queryParams.append("userId", userId);
 
-    if (options?.status) {
-      queryParams.append("status", options.status);
-    }
-
     if (options?.isPublished !== undefined) {
       queryParams.append("isPublished", options.isPublished.toString());
+    }
+    if (options?.status) {
+      queryParams.append("status", options.status);
     }
 
     const url = `${BASE_URL}/idea?${queryParams.toString()}`;

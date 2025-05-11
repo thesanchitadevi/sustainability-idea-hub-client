@@ -21,7 +21,7 @@ export function Testimonials() {
 
         // Get top 3 most voted ideas from all published ideas
         const topVoted = [...ideas]
-          .sort((a, b) => (b.votes.UP_VOTE || 0) - (a.votes.UP_VOTE || 0))
+          .sort((a, b) => (b.votes?.UP_VOTE || 0) - (a.votes?.UP_VOTE || 0))
           .slice(0, 3);
 
         setTopIdeas(topVoted);
