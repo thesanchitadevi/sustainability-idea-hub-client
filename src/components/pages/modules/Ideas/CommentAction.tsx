@@ -19,6 +19,7 @@ const CommentAction = ({
   const [showReplyModal, setShowReplyModal] = useState(false);
   const { user } = useUser();
   const { role } = user || { role: "" };
+  console.log("role", role);
   const deleteCommentHandler = async () => {
     try {
       const res = await deleteComment(commentId);

@@ -1,28 +1,31 @@
 "use client";
 
+import { useUser } from "@/context/userContext";
+import { logOut } from "@/service/auth";
+import { ICurrentUser } from "@/types";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
 import { Button } from "../ui/button";
-import { ICurrentUser } from "@/types";
-import { logOut } from "@/service/auth";
 
-export function Navbar({user} : {user : ICurrentUser}) {
+export function Navbar({ user }: { user: ICurrentUser }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const { setIsLoading } = useUser();
 
   let role;
-  if(user) {
-    role =  user?.role === 'ADMIN' ? 'admin' : 'member'
+  if (user) {
+    role = user?.role === "ADMIN" ? "admin" : "member";
   }
 
-  const handleLogout = async() => {
+  const handleLogout = async () => {
     await logOut();
-    router.push('/');
+    router.push("/");
+    setIsLoading(true);
     router.refresh();
-  }
+  };
   // console.log(user)
   const navLinks = [
     { name: "Home", href: "/" },
@@ -78,9 +81,15 @@ export function Navbar({user} : {user : ICurrentUser}) {
                 </Link>
               </>
             )}
-           { user && <Button onClick={handleLogout} variant="outline" className=" cursor-pointer text-lg">
-                        Logout
-            </Button>}
+            {user && (
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                className=" cursor-pointer text-lg"
+              >
+                Logout
+              </Button>
+            )}
           </div>
 
           {/* Mobile Toggle */}
@@ -117,7 +126,9 @@ export function Navbar({user} : {user : ICurrentUser}) {
               <div className="pt-4 border-t space-y-2">
                 {user ? (
                   <Link href="/profile">
-                    <Button className="w-full cursor-pointer">My Profile</Button>
+                    <Button className="w-full cursor-pointer">
+                      My Profile
+                    </Button>
                   </Link>
                 ) : (
                   <>
@@ -131,10 +142,15 @@ export function Navbar({user} : {user : ICurrentUser}) {
                     </Link>
                   </>
                 )}
-                { user && <Button onClick={handleLogout} variant="outline" className=" cursor-pointer w-full text-lg">
-                        Logout
-            </Button>}
-                
+                {user && (
+                  <Button
+                    onClick={handleLogout}
+                    variant="outline"
+                    className=" cursor-pointer w-full text-lg"
+                  >
+                    Logout
+                  </Button>
+                )}
               </div>
             </div>
           </div>
