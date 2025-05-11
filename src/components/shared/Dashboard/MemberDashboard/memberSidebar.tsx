@@ -1,21 +1,37 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, FileText, Menu, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  LayoutDashboard,
+  Lightbulb,
+  FileText,
+  Menu,
+  X,
+  LogOut,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { logOut, getCurrentUser } from "@/service/auth";
+import Image from "next/image";
 
-const links = [
+const navLinks = [
   {
     href: "/dashboard/member",
-    label: "Member Dashboard",
+    label: "Dashboard",
     icon: LayoutDashboard,
   },
-  { href: "/dashboard/member/create-idea", label: "Create Idea", icon: Users },
-  { href: "/dashboard/member/my-ideas", label: "My Ideas", icon: FileText },
-  { href: "/dashboard/member/profile", label: "Profile", icon: Users },
-  { href: "/dashboard/member/logout", label: "Logout", icon: Users },
+  {
+    href: "/dashboard/member/create-idea",
+    label: "Create Idea",
+    icon: Lightbulb,
+  },
+  {
+    href: "/dashboard/member/my-ideas",
+    label: "My Ideas",
+    icon: FileText,
+  },
 ];
 
 export function Sidebar2({
@@ -24,7 +40,15 @@ export function Sidebar2({
   setSidebarOpen: (open: boolean) => void;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [currentUser, setCurrentUser] = useState<{
+    id: string;
+    email: string;
+    name: string;
+    image?: string;
+  } | null>(null);
 
   const handleClose = () => setOpen(false);
 
@@ -32,35 +56,93 @@ export function Sidebar2({
     setSidebarOpen(open);
   }, [open, setSidebarOpen]);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await getCurrentUser();
+        console.log("user", user);
+
+        setCurrentUser(user);
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await logOut();
+      router.push("/login");
+      router.refresh();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
   return (
     <>
+      {/* Mobile toggle button */}
       <button
         onClick={() => setOpen(!open)}
-        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white dark:bg-gray-800 rounded shadow"
+        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-background rounded-lg shadow-sm border"
+        aria-label={open ? "Close menu" : "Open menu"}
       >
-        {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
 
+      {/* Overlay for mobile */}
       {open && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-40 z-30 md:hidden"
+          className="fixed inset-0 bg-black/50 z-30 md:hidden"
           onClick={handleClose}
         />
       )}
 
+      {/* Sidebar */}
       <aside
         className={cn(
-          "fixed md:relative top-0 left-0 min-h-screen w-64 bg-gray-100 dark:bg-gray-900 z-40 transform transition-transform duration-300 ease-in-out",
+          "fixed md:sticky top-0 left-0 h-screen w-64 border-r bg-background z-40 transition-transform duration-300 ease-in-out",
+          "flex flex-col",
           open ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         )}
       >
-        <nav className="space-y-2 p-4 pt-16 md:pt-4 ">
-          {links.map(({ href, label, icon: Icon }) => (
+        <div className="p-4 border-b">
+          <div className="flex items-center gap-3">
+            {currentUser?.image ? (
+              <Image
+                src={currentUser.image}
+                alt="User profile"
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                <span className="text-lg font-medium">
+                  {currentUser?.name?.charAt(0).toUpperCase() || "U"}
+                </span>
+              </div>
+            )}
+            <div>
+              <p className="font-medium">
+                {currentUser?.name || currentUser?.email}
+              </p>
+              <p className="text-sm text-muted-foreground">Member</p>
+            </div>
+          </div>
+        </div>
+
+        <nav className="flex-1 p-4 space-y-1">
+          {navLinks.map(({ href, label, icon: Icon }) => (
             <Link key={href} href={href} onClick={handleClose}>
               <div
                 className={cn(
-                  "flex items-center gap-3 p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800",
-                  pathname === href && "bg-gray-300 dark:bg-gray-800"
+                  "flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors",
+                  pathname === href && "bg-accent"
                 )}
               >
                 <Icon className="w-5 h-5" />
@@ -69,6 +151,19 @@ export function Sidebar2({
             </Link>
           ))}
         </nav>
+
+        <div className="p-4 border-t">
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-3 cursor-pointer"
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+          >
+            <LogOut className="w-5 h-5" />
+            <span>Logout</span>
+            {isLoggingOut && <span className="ml-2 animate-spin">...</span>}
+          </Button>
+        </div>
       </aside>
     </>
   );

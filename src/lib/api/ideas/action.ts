@@ -187,7 +187,7 @@ export const ideaSubmitReview = async (id: string) => {
   const accessToken = (await cookies()).get("accessToken")?.value;
 
   const res = await fetch(`${BASE_URL}/idea/${id}/submit`, {
-    method: "PATCH",
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: accessToken,

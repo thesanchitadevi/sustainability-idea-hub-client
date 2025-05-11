@@ -33,7 +33,11 @@ const IdeasPage = async () => {
         {ideas.length > 0 && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {ideas.map((idea) => (
-              <IdeaCard key={idea.id} idea={idea} />
+              <IdeaCard
+                key={idea.id}
+                idea={idea}
+                isAuthenticated={user !== null}
+              />
             ))}
           </div>
         )}

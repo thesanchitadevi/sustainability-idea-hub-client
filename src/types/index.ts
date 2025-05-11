@@ -24,18 +24,24 @@ interface IUser {
   role?: string;
 }
 
+interface IVotes {
+  UP_VOTE: number;
+  DOWN_VOTE: number;
+}
+
 export interface IIdea {
   id: string;
   user_id: string;
   title: string;
   price: number;
-  votes: number;
+  votes: IVotes;
   problem_statement: string;
   proposed_solution: string;
   description: string;
   isPaid: boolean;
   status: IdeaStatus;
   isPublished: boolean;
+  rejectionFeedback: string | null;
   category: IdeaCategory;
   images: IIdeaImage[];
   user: IUser;
@@ -55,8 +61,42 @@ export interface IAllUser {
 
 export interface ICurrentUser {
   email: string;
-  exp: number;    
-  iat: number;   
-  role: string; 
-  userId: string; 
+  exp: number;
+  iat: number;
+  role: string;
+  userId: string;
+}
+
+// idea types
+export interface Image {
+  id: string;
+  idea_id: string;
+  imageUrl: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  profile_image: string;
+}
+
+export interface IdeaDetails {
+  id: string;
+  title: string;
+  description: string;
+  problem_statement: string;
+  proposed_solution: string;
+  category: string;
+  isPaid: boolean;
+  isPublished: boolean;
+  status: "UNDER_REVIEW" | "APPROVED" | "REJECT";
+  rejectionFeedback: string | null;
+  createdAt: string;
+  updatedAt: string;
+  images: Image[];
+  user_id: string;
+  user: User;
 }
