@@ -3,11 +3,11 @@ import { IIdea } from "@/types";
 import { cookies } from "next/headers";
 
 interface ApiResponse {
-  success: boolean;
-  data: IIdea[];
+  data: {
+    data: IIdea[];
+  };
 }
-
-export const BASE_URL =
+const BASE_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api";
 
 export const createIdea = async (formData: FormData) => {
@@ -136,3 +136,66 @@ export async function getIdeaById(id: string): Promise<IIdea | null> {
     return null;
   }
 }
+
+export const updateIdeaById = async (id: string, data: Partial<IIdea>) => {
+  const accessToken = (await cookies()).get("accessToken")?.value;
+
+  const res = await fetch(`${BASE_URL}/idea/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: accessToken,
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+    cache: "no-store",
+  });
+
+  const updatedIdea = await res.json();
+  console.log("Updated Idea:", updatedIdea);
+  return updatedIdea;
+};
+
+export const deleteIdeaById = async (id: string): Promise<void> => {
+  const accessToken = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const response = await fetch(`${BASE_URL}/idea/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: accessToken,
+      },
+    });
+
+    console.log("Delete response:", response);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to delete idea");
+    }
+
+    return;
+  } catch (error) {
+    console.error("Error deleting idea:", error);
+    throw error;
+  }
+};
+
+export const ideaSubmitReview = async (id: string) => {
+  const accessToken = (await cookies()).get("accessToken")?.value;
+
+  const res = await fetch(`${BASE_URL}/idea/${id}/submit`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: accessToken,
+    },
+    credentials: "include",
+  });
+
+  const submittedIdea = await res.json();
+  console.log("Updated Idea:", submittedIdea);
+  return submittedIdea;
+};
