@@ -47,7 +47,7 @@ export interface IIdea {
   user: IUser;
   createdAt: string;
   updatedAt: string;
-}
+} 
 
 export interface IAllUser {
   id: string;
@@ -65,7 +65,7 @@ export interface ICurrentUser {
   iat: number;
   role: string;
   userId: string;
-}
+} 
 
 // idea types
 export interface Image {

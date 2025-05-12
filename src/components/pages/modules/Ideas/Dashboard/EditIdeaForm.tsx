@@ -50,10 +50,10 @@ export default function EditIdeaPage() {
         const fetchedIdea = await getIdeaById(id as string);
         setIdea(fetchedIdea);
         form.reset({
-          title: fetchedIdea.title,
-          description: fetchedIdea.description,
-          problemStatement: fetchedIdea.problem_statement,
-          proposedSolution: fetchedIdea.proposed_solution,
+          title: fetchedIdea?.title,
+          description: fetchedIdea?.description,
+          problemStatement: fetchedIdea?.problem_statement,
+          proposedSolution: fetchedIdea?.proposed_solution,
         });
       } catch (error) {
         console.error("Error fetching idea:", error);

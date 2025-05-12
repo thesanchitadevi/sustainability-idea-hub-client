@@ -165,7 +165,7 @@ export default function MyProfile() {
 
           {/* Account Settings */}
           {/* Account Settings */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          {/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h2 className="text-xl font-bold mb-6">Account Settings</h2>
 
             <div className="space-y-6">
@@ -201,7 +201,7 @@ export default function MyProfile() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

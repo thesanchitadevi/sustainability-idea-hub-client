@@ -1,5 +1,6 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { loginUser } from "./auth.action";
 
 export const registerUser = async (userData: FormData) => {
@@ -28,4 +29,22 @@ export const registerUser = async (userData: FormData) => {
     console.error("Error during user registration:", error);
     throw error;
   }
+};
+
+export const getMe = async () => {
+  const accessToken = (await cookies()).get("accessToken")!.value;
+  const res = await fetch(
+    "https://sustainability-idea-hub-server.vercel.app/api/user/me",
+    {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: accessToken,
+      },
+    }
+  );
+
+  const result = await res.json();
+  return result;
 };

@@ -1,19 +1,20 @@
 "use client";
 
-import { useUser } from "@/context/userContext";
-import { logOut } from "@/service/auth";
-import { ICurrentUser } from "@/types";
-import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
 
-export function Navbar({ user }: { user: ICurrentUser }) {
+import { useUser } from "@/context/userContext";
+import { logOut } from "@/service/auth";
+
+// { user }: { user: ICurrentUser  }
+export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { user } = useUser();
   const router = useRouter();
-  const { setIsLoading } = useUser();
+  // console.log("i akdjfl  = ", user)
 
   let role;
   if (user) {
@@ -22,12 +23,12 @@ export function Navbar({ user }: { user: ICurrentUser }) {
 
   const handleLogout = async () => {
     await logOut();
-    router.push("/");
-    setIsLoading(true);
-    router.refresh();
+    router.push("/login");
+    // router.refresh();
   };
-  // console.log(user)
-  const navLinks = [
+
+  // Base nav links that are always shown
+  const baseNavLinks = [
     { name: "Home", href: "/" },
     { name: "Ideas", href: "/idea" },
     { name: "Dashboard", href: `/dashboard/${role}` },

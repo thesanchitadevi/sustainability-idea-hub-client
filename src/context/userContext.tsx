@@ -12,9 +12,9 @@ import {
 export interface IUser {
   userId: string;
   email: string;
-  role: "MEMBERS" | "ADMIN";
-  iat: number;
-  exp: number;
+  role: "MEMBERS" | "ADMIN" | string;
+  iat?: number;
+  exp?: number;
 }
 
 interface AuthContextType {

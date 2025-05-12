@@ -4,8 +4,8 @@
 import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 
-export const getAllMemberIdeas = async (  page: string | number,
-  limit: string | number) => {
+export const getAllMemberIdeas = async (  page?: string | number,
+  limit?: string | number) => {
   // console.log(data)
   try {
     const res = await fetch(
