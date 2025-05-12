@@ -13,7 +13,7 @@ const BASE_URL =
 export const createIdea = async (formData: FormData) => {
   try {
     // Get access token directly
-    const accessToken = (await cookies()).get("accessToken")?.value;
+    const accessToken = (await cookies()).get("accessToken")!.value;
 
     if (!accessToken) {
       throw new Error("User not authenticated");
@@ -53,12 +53,12 @@ export async function getFeaturedIdeas(): Promise<IIdea[]> {
 
     // Filter for published ideas (with less restrictive status check)
     const featured = ideas
-      .filter((idea) => {
+      .filter((idea: any) => {
         const isFeatured = idea.isPublished === true; // && idea.status !== "APPROVED"
         return isFeatured;
       })
       .sort(
-        (a, b) =>
+        (a: any, b: any) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       )
       .slice(0, 4);
@@ -71,26 +71,28 @@ export async function getFeaturedIdeas(): Promise<IIdea[]> {
 }
 
 export async function getAllIdeas(
-  userId: string,
+  userId?: string,
   options?: {
     status?: string;
     isPublished?: boolean;
     sortBy?: "newest" | "oldest";
+    searchTerm?: string;
+    category?: string;
+    isPaid?: string;
     limit?: number;
   }
 ): Promise<IIdea[]> {
   try {
-    // Construct query parameters based on options
     const queryParams = new URLSearchParams();
-
-    queryParams.append("userId", userId);
-
-    if (options?.status) {
-      queryParams.append("status", options.status);
+    if (userId) {
+      queryParams.append("userId", userId);
     }
 
     if (options?.isPublished !== undefined) {
       queryParams.append("isPublished", options.isPublished.toString());
+    }
+    if (options?.status) {
+      queryParams.append("status", options.status);
     }
 
     const url = `${BASE_URL}/idea?${queryParams.toString()}`;
@@ -101,8 +103,6 @@ export async function getAllIdeas(
     }
 
     const result: ApiResponse = await response.json();
-    // console.log("Result:", result);
-
     return result?.data?.data || [];
   } catch (error) {
     console.error("Failed to fetch ideas:", error);
@@ -138,7 +138,7 @@ export async function getIdeaById(id: string): Promise<IIdea | null> {
 }
 
 export const updateIdeaById = async (id: string, data: Partial<IIdea>) => {
-  const accessToken = (await cookies()).get("accessToken")?.value;
+  const accessToken = (await cookies()).get("accessToken")!.value;
 
   const res = await fetch(`${BASE_URL}/idea/${id}`, {
     method: "PATCH",
@@ -157,7 +157,7 @@ export const updateIdeaById = async (id: string, data: Partial<IIdea>) => {
 };
 
 export const deleteIdeaById = async (id: string): Promise<void> => {
-  const accessToken = (await cookies()).get("accessToken")?.value;
+  const accessToken = (await cookies()).get("accessToken")!.value;
 
   try {
     const response = await fetch(`${BASE_URL}/idea/${id}`, {
@@ -184,7 +184,7 @@ export const deleteIdeaById = async (id: string): Promise<void> => {
 };
 
 export const ideaSubmitReview = async (id: string) => {
-  const accessToken = (await cookies()).get("accessToken")?.value;
+  const accessToken = (await cookies()).get("accessToken")!.value;
 
   const res = await fetch(`${BASE_URL}/idea/${id}/submit`, {
     method: "POST",

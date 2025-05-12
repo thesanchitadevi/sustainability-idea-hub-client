@@ -1,21 +1,6 @@
 "use client";
 
-import { createIdea } from "@/lib/api/ideas/action";
-import { IdeaCategory, IdeaStatus } from "@/types";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
-import { ImageUploader } from "./ImageUploader";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Form,
   FormControl,
@@ -24,9 +9,24 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { createIdea } from "@/lib/api/ideas/action";
+import { IdeaCategory, IdeaStatus } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import { ImageUploader } from "./ImageUploader";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -35,6 +35,7 @@ const formSchema = z.object({
   description: z.string().optional(),
   status: z.enum(["DRAFT", "APPROVED", "REJECT", "UNDER_REVIEW"]),
   category: z.enum(["ENERGY", "WASTE", "TRANSPORTATION"]),
+  isPaid: z.boolean(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
