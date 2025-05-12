@@ -1,8 +1,10 @@
+import Providers from "@/providers/Provider";
 import type { Metadata } from "next";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Sustainability Idea Hub",
+  title: "EcoHive",
   description: "A platform for sharing and discovering sustainability ideas.",
 };
 
@@ -12,9 +14,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
-        {/* <ThemeProvider
+    <Providers>
+      <html lang="en">
+        <body>
+          {/* <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
@@ -22,8 +25,10 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider> */}
-        {children}
-      </body>
-    </html>
+          {children}
+          <Toaster />
+        </body>
+      </html>
+    </Providers>
   );
 }
