@@ -30,7 +30,7 @@ export const getAllMemberIdeas = async (  page?: string | number,
     return Error(error);
   }
 };
-export const updateApprovedRejectIdeaStatus = async (id: string, data: {status: string}) => {
+export const updateApprovedRejectIdeaStatus = async (id: string, data: {status: string, rejectionFeedback?:string}) => {
   // console.log(data)
   try {
     const res = await fetch(
@@ -53,5 +53,34 @@ export const updateApprovedRejectIdeaStatus = async (id: string, data: {status: 
     return result;
   } catch (error: any) {
     return Error(error);
+  }
+};
+
+export const deleteIdeaByIdAdmin = async (id: string): Promise<void> => {
+  const accessToken = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/idea/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: accessToken,
+      },
+    });
+
+    // console.log("Delete response:", response);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to delete idea");
+    }
+
+    revalidateTag('ALLIDEA')
+
+    return;
+  } catch (error) {
+    console.error("Error deleting idea:", error);
+    throw error;
   }
 };

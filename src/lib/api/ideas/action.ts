@@ -58,7 +58,7 @@ export async function getFeaturedIdeas(): Promise<IIdea[]> {
         return isFeatured;
       })
       .sort(
-        (a:any, b:any) =>
+        (a: any, b: any) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       )
       .slice(0, 4);
@@ -84,7 +84,7 @@ export async function getAllIdeas(
 ): Promise<IIdea[]> {
   try {
     const queryParams = new URLSearchParams();
-    if(userId) {
+    if (userId) {
       queryParams.append("userId", userId);
     }
 

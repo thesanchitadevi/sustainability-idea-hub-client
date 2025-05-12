@@ -1,8 +1,6 @@
 // import { IdeaDetailsCard } from "@/components/pages/modules/Ideas/IdeaDetailsCard";
 // import { getIdeaById } from "@/lib/api/ideas/action";
 
-
-
 // export default async function IdeaDetailsPage({
 //   params,
 // }: {params: {id:string}}
@@ -20,16 +18,14 @@ import { IdeaDetailsCard } from "@/components/pages/modules/Ideas/IdeaDetailsCar
 import { getIdeaById } from "@/lib/api/ideas/action";
 
 type PageProps = {
-  params: Promise<{ id: string }>;  // Ensure params is a Promise
+  params: Promise<{ id: string }>; // Ensure params is a Promise
 };
 
-export default async function IdeaDetailsPage({
-  params,
-}: PageProps) {
+export default async function IdeaDetailsPage({ params }: PageProps) {
   const idea = await getIdeaById((await params).id);
 
   if (!idea) {
-    return <p>Idea not found!</p>;  
+    return <p>Idea not found!</p>;
   }
 
   return (
@@ -38,5 +34,3 @@ export default async function IdeaDetailsPage({
     </section>
   );
 }
-
-

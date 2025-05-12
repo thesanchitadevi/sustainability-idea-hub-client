@@ -1,27 +1,40 @@
+"use client";
 
-
-'use client'
-
-import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, Users, FileText, Menu, X, LogOut, Home } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { cn } from '@/lib/utils'
-import { getCurrentUser, logOut } from '@/service/auth'
-import { Button } from '@/components/ui/button'
-import Image from 'next/image'
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { getCurrentUser, logOut } from "@/service/auth";
+import {
+  FileText,
+  Home,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Users,
+  X,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const links = [
-  { href: '/dashboard/admin', label: 'Member Dashboard', icon: LayoutDashboard },
-  { href: '/dashboard/admin/users', label: 'Users', icon: Users },
-  { href: '/dashboard/admin/allIdea', label: 'All Idea', icon: FileText },
-  { href: '/', label: 'Home', icon: Home },
-  
-]
+  {
+    href: "/dashboard/admin",
+    label: "Member Dashboard",
+    icon: LayoutDashboard,
+  },
+  { href: "/dashboard/admin/users", label: "Users", icon: Users },
+  { href: "/dashboard/admin/allIdea", label: "All Idea", icon: FileText },
+  { href: "/", label: "Home", icon: Home },
+];
 
-export function Sidebar({ setSidebarOpen }: { setSidebarOpen: (open: boolean) => void }) {
-  const pathname = usePathname()
-  const [open, setOpen] = useState(false)
+export function Sidebar({
+  setSidebarOpen,
+}: {
+  setSidebarOpen: (open: boolean) => void;
+}) {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
   const router = useRouter();
 
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -32,40 +45,40 @@ export function Sidebar({ setSidebarOpen }: { setSidebarOpen: (open: boolean) =>
     image?: string;
   } | null>(null);
 
-  const handleClose = () => setOpen(false)
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
-    setSidebarOpen(open)
-  }, [open, setSidebarOpen])
+    setSidebarOpen(open);
+  }, [open, setSidebarOpen]);
 
   useEffect(() => {
-      const fetchUser = async () => {
-        try {
-          const user = await getCurrentUser();
-          // console.log("user", user);
-  
-          setCurrentUser(user);
-        } catch (error) {
-          console.error("Failed to fetch user:", error);
-        }
-      };
-      fetchUser();
-    }, []);
+    const fetchUser = async () => {
+      try {
+        const user = await getCurrentUser();
+        // console.log("user", user);
 
-    const handleLogout = async () => {
-        setIsLoggingOut(true);
-        try {
-          await logOut();
-          router.push("/login");
-          router.refresh();
-        } catch (error) {
-          console.error("Logout failed:", error);
-        } finally {
-          setIsLoggingOut(false);
-        }
-      };
+        setCurrentUser(user);
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      }
+    };
+    fetchUser();
+  }, []);
 
-   return (
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await logOut();
+      router.push("/login");
+      router.refresh();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
+  return (
     <>
       {/* Mobile toggle button */}
       <button
@@ -161,4 +174,3 @@ export function Sidebar({ setSidebarOpen }: { setSidebarOpen: (open: boolean) =>
     </>
   );
 }
-

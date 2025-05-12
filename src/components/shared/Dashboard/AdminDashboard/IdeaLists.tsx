@@ -7,9 +7,10 @@ import { toast } from "sonner";
 import { IdeaHubTable } from "@/components/Common/IdeaHubTable";
 import Pagination from "@/components/Common/Pagination";
 import { IdeaDetails } from "@/types";
-import { EyeIcon } from "lucide-react";
-import { updateApprovedRejectIdeaStatus } from "@/service/adminIdeaControll";
+import { EyeIcon, Trash2 } from "lucide-react";
+import { deleteIdeaByIdAdmin, updateApprovedRejectIdeaStatus } from "@/service/adminIdeaControll";
 import { useState } from "react";
+
 
 const IdeaLists = ({
   userData,
@@ -19,12 +20,14 @@ const IdeaLists = ({
   page: number;
 }) => {
   const [showModal, setShowModal] = useState(false);
+  const [showDlelteModal, setShowDeleteModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [rejectFeedback, setRejectFeedback] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedIdea, setSelectedIdea] = useState<IdeaDetails | null>(null);
+  const [deleteIdeaId, setDeleteIdeaId] = useState<string | null> (null);
 
   const handleApprovedIdea = async (id: string) => {
     // console.log(id, isBlock)
@@ -40,6 +43,26 @@ const IdeaLists = ({
       } else {
         toast.error(res?.message);
       }
+    } catch (err: any) {
+      console.log(err);
+      toast.error(err?.message);
+    }
+  };
+  const handleDeleteIdea = async (id: string) => {
+    // console.log(id, isBlock)
+    setLoading(true);
+   
+    try {
+      
+      await deleteIdeaByIdAdmin(id);
+      
+      setShowDeleteModal(false);
+      setLoading(false);
+
+      
+    toast.success("Idea deleted Successfully");
+    
+      
     } catch (err: any) {
       console.log(err);
       toast.error(err?.message);
@@ -100,6 +123,7 @@ const IdeaLists = ({
         </div>
       ),
     },
+    
 
     {
       accessorKey: "action",
@@ -136,6 +160,28 @@ const IdeaLists = ({
           >
             Reject
           </Button>
+        </div>
+      ),
+    },
+
+    {
+      accessorKey: "delete",
+      header: () => <div>Delete Idea</div>,
+      cell: ({ row }) => (
+        <div className=" text-center w-16">
+          <Button
+              disabled={row.original.status === 'APPROVED'}
+              variant="ghost"
+              size="sm"
+              onClick={()=> {
+                setDeleteIdeaId(row.original.id);
+                setShowDeleteModal(true)
+              }}
+              // onClick={() => handleDeleteClick(row.original.id)}
+              className="h-8 w-8 p-0 text-red-500 hover:text-red-600 cursor-pointer"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
         </div>
       ),
     },
@@ -211,6 +257,38 @@ const IdeaLists = ({
         </div>
       )}
 
+
+      {/* Confirmation delete Modal */}
+      {showDlelteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black opacity-50" />
+
+          {/* Modal */}
+          <div className="relative z-10 bg-white p-6 rounded-lg shadow-xl max-w-sm w-full">
+            <h2 className="text-lg font-bold mb-4 text-red-600">
+              Are you sure?
+            </h2>
+            <p className="mb-6">Do you want to delete this idea?</p>
+            <div className="flex justify-end space-x-2">
+              <Button
+                className="bg-gray-200 text-black hover:bg-gray-300 cursor-pointer"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                No
+              </Button>
+              <Button
+                className="bg-red-600 text-white hover:bg-red-700 cursor-pointer"
+                onClick={() => handleDeleteIdea(deleteIdeaId)}
+                // onClick={() => selectedId && handleApprovedIdea(selectedId)}
+              >
+                {loading ? 'Deleting...' : 'Yes'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showDetailsModal && selectedIdea && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
           {/* Backdrop */}
@@ -264,14 +342,6 @@ const IdeaLists = ({
                     {selectedIdea.isPublished ? "Yes" : "No"}
                   </p>
                 </div>
-
-                <div>
-                  <p className="font-semibold text-green-600">isPaid</p>
-                  <p className="text-gray-700">
-                    {selectedIdea.isPaid ? "Yes" : "No"}
-                  </p>
-                </div>
-
               </div>
             </div>
 

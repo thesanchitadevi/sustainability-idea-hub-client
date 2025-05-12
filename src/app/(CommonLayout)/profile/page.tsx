@@ -1,13 +1,12 @@
-import MyProfile from '@/components/pages/modules/Profile'
-import React from 'react'
+import MyProfile from "@/components/pages/modules/Profile";
 
 const ProfilePage = () => {
-  console.log("profile page")
+  console.log("profile page");
   return (
     <>
-        <MyProfile/>
+      <MyProfile />
     </>
-  )
-}
+  );
+};
 
-export default ProfilePage
+export default ProfilePage;

@@ -1,8 +1,9 @@
 "use client";
 
 import { IdeaCard } from "@/components/pages/modules/Ideas/IdeaCard";
-import { getAllIdeas } from "@/lib/api/ideas/action";
-import { getCurrentUser } from "@/service/auth";
+import { CardSkeletonGrid } from "@/components/pages/modules/Ideas/Skeleton";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -11,13 +12,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Search, Filter, ArrowUpDown } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { getAllIdeas } from "@/lib/api/ideas/action";
+import { getCurrentUser } from "@/service/auth";
 import { IIdea } from "@/types";
-import { Card } from "@/components/ui/card";
-import { CardSkeletonGrid } from "@/components/pages/modules/Ideas/Skeleton";
+import { ArrowUpDown, Filter, Search } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const IdeasPage = () => {
   const router = useRouter();
@@ -49,10 +49,20 @@ const IdeasPage = () => {
         setUser(currentUser);
 
         const params = {
-          searchTerm: searchTerm || undefined,
-          category: categoryFilter !== "all" ? categoryFilter : undefined,
-          isPaid: isPaidFilter !== "all" ? isPaidFilter : undefined,
-          sort: sortOption !== "newest" ? sortOption : undefined,
+          status: categoryFilter !== "all" ? categoryFilter : undefined,
+          isPublished:
+            isPaidFilter === "paid"
+              ? true
+              : isPaidFilter === "free"
+              ? false
+              : undefined,
+          sortBy:
+            sortOption === "newest"
+              ? "newest"
+              : sortOption === "oldest"
+              ? "oldest"
+              : undefined,
+          limit: undefined, // Add a limit if required
         };
 
         const ideasData = await getAllIdeas(currentUser?.id, params);

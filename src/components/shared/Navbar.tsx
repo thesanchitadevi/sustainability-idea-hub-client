@@ -1,19 +1,19 @@
 "use client";
 
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
 import { Button } from "../ui/button";
 
-import { logOut } from "@/service/auth";
 import { useUser } from "@/context/userContext";
+import { logOut } from "@/service/auth";
 
 // { user }: { user: ICurrentUser  }
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  const {user} = useUser();
+  const { user } = useUser();
   const router = useRouter();
   // console.log("i akdjfl  = ", user)
 
@@ -22,11 +22,10 @@ export function Navbar() {
     role = user?.role === "ADMIN" ? "admin" : "member";
   }
 
-  const handleLogout = async() => {
+  const handleLogout = async () => {
     await logOut();
-    router.push('/login');
+    router.push("/login");
     // router.refresh();
-
   };
 
   // Base nav links that are always shown

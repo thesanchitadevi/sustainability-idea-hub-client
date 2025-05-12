@@ -19,7 +19,7 @@ export const getCurrentUser = async () => {
       id: decoded.userId,
       name: decoded.name,
       email: decoded.email,
-      role:decoded.role
+      role: decoded.role,
     };
   } catch (error) {
     console.error("Error decoding token:", error);
@@ -55,18 +55,15 @@ export const getAllUsers = async (
 };
 export const getMe = async () => {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/me`,
-      {
-        next: {
-          tags: ["USERS"],
-        },
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: (await cookies()).get("accessToken")!.value,
-        },
-      }
-    );
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/me`, {
+      next: {
+        tags: ["USERS"],
+      },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: (await cookies()).get("accessToken")!.value,
+      },
+    });
 
     const result = await res.json();
 
@@ -76,12 +73,11 @@ export const getMe = async () => {
     return Error(error);
   }
 };
-export const getPaidInfo = async (id:string) => {
+export const getPaidInfo = async (id: string) => {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/payment/paidIdea/${id}`,
       {
-       
         headers: {
           "Content-Type": "application/json",
           Authorization: (await cookies()).get("accessToken")!.value,
@@ -150,7 +146,6 @@ export const changeUserRole = async (id: string, data: { role: string }) => {
   }
 };
 
-
 export const givePayment = async (id: string) => {
   // console.log(data)
   try {
@@ -174,6 +169,6 @@ export const givePayment = async (id: string) => {
   }
 };
 
-export const logOut = async() => {
-  (await cookies()).delete('accessToken');
-}
+export const logOut = async () => {
+  (await cookies()).delete("accessToken");
+};

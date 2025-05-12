@@ -1,25 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { IIdea } from "@/types";
-import { CategoryBadge } from "./CategoryBadge";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ThumbsUp, ThumbsDown, Crown } from "lucide-react";
+import { IIdea } from "@/types";
+import { Crown, ThumbsDown, ThumbsUp } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { CategoryBadge } from "./CategoryBadge";
 
-import { useEffect, useState } from "react";
-import { getCurrentUser, getPaidInfo, givePayment } from "@/service/auth";
 import { IUser } from "@/context/userContext";
+import { getCurrentUser, getPaidInfo, givePayment } from "@/service/auth";
+import { useEffect, useState } from "react";
 
 interface IdeaCardProps {
   idea: IIdea;
@@ -39,11 +39,12 @@ export function IdeaCard({
   console.log(idea);
 
   const [isPaid, setIsPaid] = useState("");
-  
+
   const [user, setUserINof] = useState<IUser | null>(null);
 
   const [isParchesing, setIsParchesing] = useState(false);
 
+  console.log("idea", idea);
   useEffect(() => {
     const getPayinfo = async () => {
       try {
@@ -52,15 +53,13 @@ export function IdeaCard({
           getPaidInfo(idea.id),
         ]);
         const userInfo: IUser = {
-        userId: userData?.id || "",
-        email: userData?.email || "",
-        role: userData?.role || "MEMBERS",
-        
-      };
+          userId: userData?.id || "",
+          email: userData?.email || "",
+          role: userData?.role || "MEMBERS",
+        };
         setUserINof(userInfo);
         const paymentInfo = res?.data;
         setIsPaid(paymentInfo?.status);
-        
       } catch (error) {
         console.error("Error fetching payment or user info:", error);
       }
