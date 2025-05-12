@@ -1,18 +1,20 @@
+import { getVotes } from "@/lib/actions/vote.action";
 import { IIdea } from "@/types";
 import { format } from "date-fns";
-import { ArrowBigUp, User } from "lucide-react";
+import { User } from "lucide-react";
 import { CategoryBadge } from "./CategoryBadge";
 import CommentsSection from "./CommentsSection";
 import { IdeaGallery } from "./IdeaGallery";
 import { StatusBadge } from "./StatusBadge";
+import VoteAction from "./VoteAction";
 
-export function IdeaDetailsCard({ idea }: { idea: IIdea }) {
+export async function IdeaDetailsCard({ idea }: { idea: IIdea }) {
   const {
     title,
     category,
     status,
     isPaid,
-    votes = 0,
+
     images,
     price = 200,
     problem_statement,
@@ -22,7 +24,9 @@ export function IdeaDetailsCard({ idea }: { idea: IIdea }) {
     isPublished,
     user,
   } = idea || {};
-  console.log("idea", idea);
+
+  const votes = await getVotes(idea?.id);
+
   return (
     <div className="w-full bg-white rounded-xl shadow-md overflow-hidden">
       {/* Header Section */}
@@ -39,10 +43,6 @@ export function IdeaDetailsCard({ idea }: { idea: IIdea }) {
                 </span>
               )}
             </div>
-          </div>
-          <div className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full min-w-fit">
-            <ArrowBigUp className="h-4 w-4 text-green-600" />
-            <span className="font-medium">{votes || 0} votes</span>
           </div>
         </div>
       </div>
@@ -115,6 +115,9 @@ export function IdeaDetailsCard({ idea }: { idea: IIdea }) {
             </div>
           </div>
         </div>
+      </div>
+      <div>
+        <VoteAction ideaId={idea.id} votes={votes} />
       </div>
 
       {/* Footer with Author Info */}

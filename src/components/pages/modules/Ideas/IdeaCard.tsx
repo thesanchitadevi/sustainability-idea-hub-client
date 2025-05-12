@@ -9,12 +9,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getVotes } from "@/lib/actions/vote.action";
 import { IIdea } from "@/types";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { CategoryBadge } from "./CategoryBadge";
+import { IVote } from "./VoteAction";
 
 interface IdeaCardProps {
   idea: IIdea;
@@ -30,8 +33,33 @@ export function IdeaCard({
   isAuthenticated = false,
 }: IdeaCardProps) {
   const router = useRouter();
-
+  console.log("idea", idea);
+  const [votes, setVotes] = useState<IVote[] | null>(null);
+  const [upVoteCount, setUpVoteCount] = useState(0);
+  const [downVoteCount, setDownVoteCount] = useState(0);
   // if (!idea.isPublished) return null;
+
+  useEffect(() => {
+    async function fetchVotes() {
+      try {
+        const response = await getVotes(idea.id);
+
+        setVotes(response);
+      } catch (error) {
+        console.error("Failed to fetch votes:", error);
+      }
+    }
+    fetchVotes();
+  }, []);
+
+  useEffect(() => {
+    setUpVoteCount(
+      votes?.filter((vote) => vote.vote_type === "UP_VOTE").length || 0
+    );
+    setDownVoteCount(
+      votes?.filter((vote) => vote.vote_type === "DOWN_VOTE").length || 0
+    );
+  }, [votes]);
 
   const displayImage =
     idea.images?.length > 0
@@ -50,8 +78,6 @@ export function IdeaCard({
   };
 
   // Separate upvotes and downvotes display
-  const upvotes = idea.votes?.UP_VOTE || 0;
-  const downvotes = idea.votes?.DOWN_VOTE || 0;
 
   return (
     <Card
@@ -130,11 +156,11 @@ export function IdeaCard({
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1">
               <ThumbsUp size={16} className="text-blue-500" />
-              <span className="text-sm font-medium">{upvotes}</span>
+              <span className="text-sm font-medium">{upVoteCount}</span>
             </div>
             <div className="flex items-center gap-1">
               <ThumbsDown size={16} className="text-red-500" />
-              <span className="text-sm font-medium">{downvotes}</span>
+              <span className="text-sm font-medium">{downVoteCount}</span>
             </div>
           </div>
 
