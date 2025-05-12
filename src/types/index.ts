@@ -25,8 +25,12 @@ interface IUser {
 }
 
 interface IVotes {
-  UP_VOTE: number;
-  DOWN_VOTE: number;
+  // UP_VOTE: number;
+  // DOWN_VOTE: number;
+  idea_id: string;
+  user_id:string;
+  vote_type:"DOWN_VOTE" | "UP_VOTE";
+
 }
 
 export interface IIdea {
@@ -34,7 +38,7 @@ export interface IIdea {
   user_id: string;
   title: string;
   price: number;
-  votes: IVotes;
+  votes: IVotes[];
   problem_statement: string;
   proposed_solution: string;
   description: string;

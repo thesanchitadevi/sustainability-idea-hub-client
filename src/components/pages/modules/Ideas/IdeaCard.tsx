@@ -35,6 +35,11 @@ export function IdeaCard({
   isAuthenticated = false,
 }: IdeaCardProps) {
   const router = useRouter();
+  console.log(idea.votes);
+
+  const downvote = idea.votes.filter(item => item.vote_type === 'DOWN_VOTE');
+  const upvote = idea.votes.filter(item => item.vote_type === 'UP_VOTE');
+  
 
   const [isPaid, setIsPaid] = useState("");
   
@@ -89,8 +94,8 @@ export function IdeaCard({
     }
   };
 
-  const upvotes = idea.votes?.UP_VOTE || 0;
-  const downvotes = idea.votes?.DOWN_VOTE || 0;
+  // const upvotes = idea.votes?.UP_VOTE || 0;
+  // const downvotes = idea.votes?.DOWN_VOTE || 0;
 
   return (
     <Card
@@ -170,11 +175,11 @@ export function IdeaCard({
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1 text-sm">
                 <ThumbsUp size={16} className="text-blue-500" />
-                <span>{upvotes}</span>
+                <span>{upvote?.length}</span>
               </div>
               <div className="flex items-center gap-1 text-sm">
                 <ThumbsDown size={16} className="text-red-500" />
-                <span>{downvotes}</span>
+                <span>{downvote?.length}</span>
               </div>
             </div>
 
