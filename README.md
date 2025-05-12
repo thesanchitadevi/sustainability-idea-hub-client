@@ -45,7 +45,7 @@ The platform is built with modern web technologies to provide a seamless user ex
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/thesanchitadevi/sustainability-idea-hub-server.git
+git clone https://github.com/thesanchitadevi/sustainability-idea-hub-client
 cd sustainability-idea-hub-client
 ```
 
