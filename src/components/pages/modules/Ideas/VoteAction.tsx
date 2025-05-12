@@ -52,7 +52,7 @@ const VoteAction = ({ ideaId, votes }: IVoteAction) => {
       }
     } catch (error) {
       console.log("Error in upvoting:", error);
-      toast.error(error.message || "Error in upvoting");
+      toast.error((error as any)?.message || "Error in upvoting");
     } finally {
       setIsLoading(false);
     }
@@ -72,7 +72,7 @@ const VoteAction = ({ ideaId, votes }: IVoteAction) => {
       }
     } catch (error) {
       console.log("Error in upvoting:", error);
-      toast.error(error.message || "Error in downvoting");
+      toast.error((error as Error)?.message || "Error in downvoting");
     } finally {
       setIsLoading(false);
     }

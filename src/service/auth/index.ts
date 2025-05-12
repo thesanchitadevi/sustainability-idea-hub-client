@@ -13,21 +13,19 @@ export const getCurrentUser = async () => {
       userId: string;
       [key: string]: any;
     };
-    console.log("Decoded token:", decoded);
+    // console.log("Decoded token:", decoded);
 
     return {
       id: decoded.userId,
       name: decoded.name,
       email: decoded.email,
-      role:decoded.role
+      role: decoded.role,
     };
   } catch (error) {
     console.error("Error decoding token:", error);
     return null;
   }
 };
-
-
 
 export const getAllUsers = async (
   page: string | number,
@@ -57,12 +55,29 @@ export const getAllUsers = async (
 };
 export const getMe = async () => {
   try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/me`, {
+      next: {
+        tags: ["USERS"],
+      },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: (await cookies()).get("accessToken")!.value,
+      },
+    });
+
+    const result = await res.json();
+
+    // console.log(result)
+    return result;
+  } catch (error: any) {
+    return Error(error);
+  }
+};
+export const getPaidInfo = async (id: string) => {
+  try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/me`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/payment/paidIdea/${id}`,
       {
-        next: {
-          tags: ["USERS"],
-        },
         headers: {
           "Content-Type": "application/json",
           Authorization: (await cookies()).get("accessToken")!.value,
@@ -131,6 +146,29 @@ export const changeUserRole = async (id: string, data: { role: string }) => {
   }
 };
 
-export const logOut = async() => {
-  (await cookies()).delete('accessToken');
-}
+export const givePayment = async (id: string) => {
+  // console.log(data)
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/payment/init-payment/${id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: (await cookies()).get("accessToken")!.value,
+        },
+      }
+    );
+    // revalidateTag("USERS");
+    const result = await res.json();
+
+    // console.log(result)
+    return result;
+  } catch (error: any) {
+    return Error(error);
+  }
+};
+
+export const logOut = async () => {
+  (await cookies()).delete("accessToken");
+};

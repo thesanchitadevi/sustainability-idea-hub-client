@@ -10,7 +10,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { IIdea } from "@/types";
 import { Crown, ThumbsDown, ThumbsUp } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { CategoryBadge } from "./CategoryBadge";
 
 import { IUser } from "@/context/userContext";
 import { getCurrentUser, getPaidInfo, givePayment } from "@/service/auth";

@@ -78,33 +78,6 @@ export function Sidebar({
     }
   };
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const user = await getCurrentUser();
-        // console.log("user", user);
-
-        setCurrentUser(user);
-      } catch (error) {
-        console.error("Failed to fetch user:", error);
-      }
-    };
-    fetchUser();
-  }, []);
-
-  const handleLogout = async () => {
-    setIsLoggingOut(true);
-    try {
-      await logOut();
-      router.push("/login");
-      router.refresh();
-    } catch (error) {
-      console.error("Logout failed:", error);
-    } finally {
-      setIsLoggingOut(false);
-    }
-  };
-
   return (
     <>
       {/* Mobile toggle button */}

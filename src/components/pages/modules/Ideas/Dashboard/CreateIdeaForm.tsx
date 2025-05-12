@@ -26,6 +26,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { ImageUploader } from "./ImageUploader";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
