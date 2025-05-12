@@ -36,6 +36,8 @@ export function IdeaCard({
 }: IdeaCardProps) {
   const router = useRouter();
 
+  console.log(idea);
+
   const [isPaid, setIsPaid] = useState("");
   
   const [user, setUserINof] = useState<IUser | null>(null);
