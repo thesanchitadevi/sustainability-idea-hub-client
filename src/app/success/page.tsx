@@ -16,7 +16,7 @@ export default function PaymentSuccess() {
           Thank you for your purchase. Your transaction has been completed successfully.
         </p>
         <Button asChild className="w-full sm:w-auto">
-          <Link href="/">Go Back Home</Link>
+          <Link href="/">Go Back</Link>
         </Button>
       </div>
     </div>
