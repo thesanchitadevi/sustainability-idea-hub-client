@@ -42,6 +42,7 @@ export function IdeaCard({
 
   const [isParchesing, setIsParchesing] = useState(false);
 
+  console.log("idea", idea);
   useEffect(() => {
     const getPayinfo = async () => {
       try {

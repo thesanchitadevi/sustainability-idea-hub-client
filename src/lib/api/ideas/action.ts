@@ -76,11 +76,13 @@ export async function getAllIdeas(
     status?: string;
     isPublished?: boolean;
     sortBy?: "newest" | "oldest";
+    searchTerm?: string;
+    category?: string;
+    isPaid?: string;
     limit?: number;
   }
 ): Promise<IIdea[]> {
   try {
-    // Construct query parameters based on options
     const queryParams = new URLSearchParams();
     if (userId) {
       queryParams.append("userId", userId);
@@ -93,10 +95,6 @@ export async function getAllIdeas(
       queryParams.append("status", options.status);
     }
 
-    if (options?.isPublished !== undefined) {
-      queryParams.append("isPublished", options.isPublished.toString());
-    }
-
     const url = `${BASE_URL}/idea?${queryParams.toString()}`;
     const response = await fetch(url);
 
@@ -105,8 +103,6 @@ export async function getAllIdeas(
     }
 
     const result: ApiResponse = await response.json();
-    // console.log("Result:", result);
-
     return result?.data?.data || [];
   } catch (error) {
     console.error("Failed to fetch ideas:", error);
