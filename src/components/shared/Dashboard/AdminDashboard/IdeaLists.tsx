@@ -264,6 +264,14 @@ const IdeaLists = ({
                     {selectedIdea.isPublished ? "Yes" : "No"}
                   </p>
                 </div>
+
+                <div>
+                  <p className="font-semibold text-green-600">isPaid</p>
+                  <p className="text-gray-700">
+                    {selectedIdea.isPaid ? "Yes" : "No"}
+                  </p>
+                </div>
+
               </div>
             </div>
 
