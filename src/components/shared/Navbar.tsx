@@ -1,38 +1,39 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
-import { Button } from "../ui/button";
-import { ICurrentUser } from "@/types";
+import { useUser } from "@/context/userContext";
 import { logOut } from "@/service/auth";
+import { ICurrentUser } from "@/types";
+import { Menu, X } from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import { Button } from "../ui/button";
 
 export function Navbar({ user }: { user: ICurrentUser }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const { setIsLoading } = useUser();
 
   let role;
   if (user) {
     role = user?.role === "ADMIN" ? "admin" : "member";
   }
 
-  const handleLogout = () => {
-    logOut();
+  const handleLogout = async () => {
+    await logOut();
+    router.push("/");
+    setIsLoading(true);
+    router.refresh();
   };
-
-  // Base nav links that are always shown
-  const baseNavLinks = [
+  // console.log(user)
+  const navLinks = [
     { name: "Home", href: "/" },
     { name: "Ideas", href: "/idea" },
+    { name: "Dashboard", href: `/dashboard/${role}` },
     { name: "About", href: "/about" },
     { name: "Blog", href: "/blog" },
   ];
-
-  // Add Dashboard link only if user exists
-  const navLinks = user
-    ? [...baseNavLinks, { name: "Dashboard", href: `/dashboard/${role}` }]
-    : baseNavLinks;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
@@ -104,9 +105,10 @@ export function Navbar({ user }: { user: ICurrentUser }) {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden absolute top-20 left-0 right-0 bg-background border-t shadow-lg">
+          <div className="md:hidden absolute top-16 left-0 right-0 bg-background border-t shadow-lg">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 space-y-4">
               {" "}
+              {/* Consistent max-w and padding */}
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
@@ -129,7 +131,7 @@ export function Navbar({ user }: { user: ICurrentUser }) {
                     </Button>
                   </Link>
                 ) : (
-                  <div className="flex flex-col gap-2">
+                  <>
                     <Link href="/login">
                       <Button variant="outline" className="w-full">
                         Login
@@ -138,7 +140,7 @@ export function Navbar({ user }: { user: ICurrentUser }) {
                     <Link href="/register">
                       <Button className="w-full">Register</Button>
                     </Link>
-                  </div>
+                  </>
                 )}
                 {user && (
                   <Button

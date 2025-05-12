@@ -90,7 +90,7 @@ export function BlogSection() {
         {/* Featured Post */}
         <div className="mb-16">
           <div className="bg-white rounded-xl shadow-md overflow-hidden">
-            <div className="md:flex md:h-[350px]">
+            <div className="md:flex h-[350px]">
               <div className="md:w-1/2">
                 <Image
                   src={featuredPost.imageUrl}

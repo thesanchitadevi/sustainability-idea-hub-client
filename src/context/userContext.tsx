@@ -33,8 +33,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const handleUser = async () => {
-    const user = await getCurrentUser();
-    setUser(user);
+    const userFromCookie = await getCurrentUser();
+    setUser(userFromCookie);
     setIsLoading(false);
   };
 
