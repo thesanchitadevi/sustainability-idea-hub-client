@@ -16,6 +16,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
 
+import { useEffect, useState } from "react";
+import { getCurrentUser, getPaidInfo, givePayment } from "@/service/auth";
+
+
 interface IdeaCardProps {
   idea: IIdea;
   className?: string;
@@ -30,6 +34,34 @@ export function IdeaCard({
   isAuthenticated = false,
 }: IdeaCardProps) {
   const router = useRouter();
+  
+  const [isPaid, setIsPaid] = useState("");
+  const [paidInfo, setPaidInfo] = useState({});
+  const [user, setUserINof] = useState(null);
+  const [isParchesing, setIsParchesing] = useState(false);
+
+  
+  useEffect(() => {
+    const getPayinfo = async () => {
+     try {
+      const [userData, res] = await Promise.all([
+        getCurrentUser(),
+        getPaidInfo(idea.id)
+      ])
+      setUserINof(userData);
+      const paymentInfo = res?.data;
+      setIsPaid(paymentInfo?.status);
+      setPaidInfo(paymentInfo);
+     } catch (error) {
+      console.error('Error fetching payment or user info:', error);
+     }
+    };
+    getPayinfo();
+  }, [idea.id]);
+  const hasPaid = user && isPaid === "PAID";
+  isAuthenticated = !!user;
+
+  // console.log("this is my parchese info = ", user)
 
   if (!idea.isPublished) return null;
 
@@ -38,13 +70,17 @@ export function IdeaCard({
       ? idea.images[Math.min(displayImageIndex, idea.images.length - 1)]
       : null;
 
-  const handleViewIdea = (e: React.MouseEvent) => {
+  const handleViewIdea = async(e: React.MouseEvent) => {
     if (idea.isPaid) {
       e.preventDefault();
       if (!isAuthenticated) {
         router.push(`/login?callbackUrl=/idea/${idea.id}`);
       } else {
-        router.push(`/idea/${idea.id}/purchase`);
+        setIsParchesing(true);
+        const paymentData = await givePayment(idea.id);
+        setIsParchesing(false)
+        // console.log(paymentData?.data?.paymentUrl)
+        router.push(paymentData?.data?.paymentUrl);
       }
     }
   };
@@ -138,22 +174,27 @@ export function IdeaCard({
             </div>
           </div>
 
-          {idea.isPaid ? (
+
+          {user?.role === "ADMIN" ? (
+            <Button asChild variant="outline" size="sm" className="h-8 px-3 cursor-pointer">
+              <Link href={`/idea/${idea.id}`}>View</Link>
+            </Button>
+          ) : !idea.isPaid ? (
+            <Button asChild variant="outline" size="sm" className="h-8 px-3 cursor-pointer">
+              <Link href={`/idea/${idea.id}`}>View</Link>
+            </Button>
+          ) : isAuthenticated && hasPaid ? (
+            <Button asChild variant="outline" size="sm" className="h-8 px-3 cursor-pointer">
+              <Link href={`/idea/${idea.id}`}>View</Link>
+            </Button>
+          ) : (
             <Button
               onClick={handleViewIdea}
               size="sm"
-              className="h-8 px-3 bg-green-600 hover:bg-green-700"
+              disabled={isParchesing}
+              className="h-8 px-3 bg-green-600 hover:bg-green-700 cursor-pointer"
             >
-              {isAuthenticated ? "Purchase" : "Login"}
-            </Button>
-          ) : (
-            <Button asChild variant="outline" size="sm" className="h-8 px-3">
-              <Link
-                href={`/idea/${idea.id}`}
-                aria-label={`View details for ${idea.title}`}
-              >
-                View
-              </Link>
+              {isAuthenticated ? isParchesing ? "Purchase..." : "Purchase" : "Login"}
             </Button>
           )}
         </div>
