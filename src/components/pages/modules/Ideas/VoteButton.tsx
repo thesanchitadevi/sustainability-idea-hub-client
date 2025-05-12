@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState } from "react";
-import { ArrowBigUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ArrowBigUp } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 type VoteButtonProps = {
@@ -14,6 +14,7 @@ type VoteButtonProps = {
 export function VoteButton({ initialVotes, ideaId }: VoteButtonProps) {
   const [votes, setVotes] = useState(initialVotes);
   const [hasVoted, setHasVoted] = useState(false);
+  console.log("initialVotes", initialVotes);
 
   const handleVote = async () => {
     try {
