@@ -82,18 +82,18 @@ const RegisterForm = () => {
       const formData = new FormData();
       formData.append("file", values.profileImage);
       formData.append("data", JSON.stringify(data));
-      const response = await registerUser(formData);
-      if (!response?.success) {
-        setError(response?.message || "Registration failed");
+      const res = await registerUser(formData);
+      console.log({ res });
+      if (!res?.success) {
+        setError(res?.message || "Registration failed");
         return;
       } else {
         toast.success("Registration successful");
         router.push("/");
       }
-      console.log({ response });
     } catch (err) {
-      setError("Failed to register. Please try again.");
-      console.error(err);
+      setError(err.message || "Failed to register. Please try again.");
+      console.log(err.message);
     } finally {
       setIsLoading(false);
     }
