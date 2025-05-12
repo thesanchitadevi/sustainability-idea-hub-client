@@ -77,7 +77,7 @@ export function Testimonials() {
                     <ArrowBigUp className="h-5 w-5 text-green-600" />
                   </div>
                   <span className="font-medium">
-                    {idea.votes.UP_VOTE || 0} votes
+                    {idea?.votes?.UP_VOTE || 0} votes
                   </span>
                 </div>
 
