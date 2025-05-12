@@ -76,21 +76,21 @@ export async function getAllIdeas(
     status?: string;
     isPublished?: boolean;
     sortBy?: "newest" | "oldest";
-    searchTerm?: string;
-    category?: string;
-    isPaid?: string;
     limit?: number;
   }
 ): Promise<IIdea[]> {
   try {
+    // Construct query parameters based on options
     const queryParams = new URLSearchParams();
+
     queryParams.append("userId", userId);
+
+    if (options?.status) {
+      queryParams.append("status", options.status);
+    }
 
     if (options?.isPublished !== undefined) {
       queryParams.append("isPublished", options.isPublished.toString());
-    }
-    if (options?.status) {
-      queryParams.append("status", options.status);
     }
 
     const url = `${BASE_URL}/idea?${queryParams.toString()}`;
@@ -101,6 +101,51 @@ export async function getAllIdeas(
     }
 
     const result: ApiResponse = await response.json();
+    // console.log("Result:", result);
+
+    return result?.data?.data || [];
+  } catch (error) {
+    console.error("Failed to fetch ideas:", error);
+    return [];
+  }
+}
+
+
+export async function getAllIdeasForAll(
+  userId?: string,
+  options?: {
+    status?: string;
+    isPublished?: boolean | string;
+    sortBy?: "newest" | "oldest";
+    limit?: number;
+  }
+): Promise<IIdea[]> {
+  try {
+    // Construct query parameters based on options
+    const queryParams = new URLSearchParams();
+
+    if(userId) {
+      queryParams.append("userId", userId);
+    }
+
+    if (options?.status) {
+      queryParams.append("status", options.status);
+    }
+
+    if (options?.isPublished !== undefined) {
+      queryParams.append("isPublished", options.isPublished.toString());
+    }
+
+    const url = `${BASE_URL}/idea?${queryParams.toString()}`;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const result: ApiResponse = await response.json();
+    // console.log("Result:", result);
+
     return result?.data?.data || [];
   } catch (error) {
     console.error("Failed to fetch ideas:", error);

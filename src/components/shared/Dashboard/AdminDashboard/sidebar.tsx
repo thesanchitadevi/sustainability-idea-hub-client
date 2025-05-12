@@ -4,7 +4,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Users, FileText, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Users, FileText, Menu, X, Home } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 
@@ -12,6 +12,7 @@ const links = [
   { href: '/dashboard/admin', label: 'Member Dashboard', icon: LayoutDashboard },
   { href: '/dashboard/admin/user', label: 'Users', icon: Users },
   { href: '/dashboard/admin/allIdea', label: 'All Idea', icon: FileText },
+  { href: "/", label: "Home", icon: Home },
   
 ]
 

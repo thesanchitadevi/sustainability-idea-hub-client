@@ -1,24 +1,23 @@
 "use client";
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { IIdea } from "@/types";
-import { CategoryBadge } from "./CategoryBadge";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ThumbsUp, ThumbsDown } from "lucide-react";
-
+import { getVotes } from "@/lib/actions/vote.action";
+import { IIdea } from "@/types";
+import { ThumbsDown, ThumbsUp } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getCurrentUser, getPaidInfo, givePayment } from "@/service/auth";
-
+import { CategoryBadge } from "./CategoryBadge";
+import { IVote } from "./VoteAction";
 
 interface IdeaCardProps {
   idea: IIdea;
@@ -34,60 +33,51 @@ export function IdeaCard({
   isAuthenticated = false,
 }: IdeaCardProps) {
   const router = useRouter();
-  
-  const [isPaid, setIsPaid] = useState("");
-  const [paidInfo, setPaidInfo] = useState({});
-  const [user, setUserINof] = useState(null);
-  const [isParchesing, setIsParchesing] = useState(false);
+  console.log("idea", idea);
+  const [votes, setVotes] = useState<IVote[] | null>(null);
+  const [upVoteCount, setUpVoteCount] = useState(0);
+  const [downVoteCount, setDownVoteCount] = useState(0);
+  // if (!idea.isPublished) return null;
 
-  
   useEffect(() => {
-    const getPayinfo = async () => {
-     try {
-      const [userData, res] = await Promise.all([
-        getCurrentUser(),
-        getPaidInfo(idea.id)
-      ])
-      setUserINof(userData);
-      const paymentInfo = res?.data;
-      setIsPaid(paymentInfo?.status);
-      setPaidInfo(paymentInfo);
-     } catch (error) {
-      console.error('Error fetching payment or user info:', error);
-     }
-    };
-    getPayinfo();
-  }, [idea.id]);
-  const hasPaid = user && isPaid === "PAID";
-  isAuthenticated = !!user;
+    async function fetchVotes() {
+      try {
+        const response = await getVotes(idea.id);
 
-  // console.log("this is my parchese info = ", user)
+        setVotes(response);
+      } catch (error) {
+        console.error("Failed to fetch votes:", error);
+      }
+    }
+    fetchVotes();
+  }, []);
 
-  if (!idea.isPublished) return null;
+  useEffect(() => {
+    setUpVoteCount(
+      votes?.filter((vote) => vote.vote_type === "UP_VOTE").length || 0
+    );
+    setDownVoteCount(
+      votes?.filter((vote) => vote.vote_type === "DOWN_VOTE").length || 0
+    );
+  }, [votes]);
 
   const displayImage =
     idea.images?.length > 0
       ? idea.images[Math.min(displayImageIndex, idea.images.length - 1)]
       : null;
 
-  const handleViewIdea = async(e: React.MouseEvent) => {
+  const handleViewIdea = (e: React.MouseEvent) => {
     if (idea.isPaid) {
       e.preventDefault();
       if (!isAuthenticated) {
         router.push(`/login?callbackUrl=/idea/${idea.id}`);
       } else {
-        setIsParchesing(true);
-        const paymentData = await givePayment(idea.id);
-        setIsParchesing(false)
-        // console.log(paymentData?.data?.paymentUrl)
-        router.push(paymentData?.data?.paymentUrl);
+        router.push(`/idea/${idea.id}/purchase`);
       }
     }
   };
 
   // Separate upvotes and downvotes display
-  const upvotes = idea.votes?.UP_VOTE || 0;
-  const downvotes = idea.votes?.DOWN_VOTE || 0;
 
   return (
     <Card
@@ -166,35 +156,30 @@ export function IdeaCard({
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1">
               <ThumbsUp size={16} className="text-blue-500" />
-              <span className="text-sm font-medium">{upvotes}</span>
+              <span className="text-sm font-medium">{upVoteCount}</span>
             </div>
             <div className="flex items-center gap-1">
               <ThumbsDown size={16} className="text-red-500" />
-              <span className="text-sm font-medium">{downvotes}</span>
+              <span className="text-sm font-medium">{downVoteCount}</span>
             </div>
           </div>
 
-
-          {user?.role === "ADMIN" ? (
-            <Button asChild variant="outline" size="sm" className="h-8 px-3 cursor-pointer">
-              <Link href={`/idea/${idea.id}`}>View</Link>
-            </Button>
-          ) : !idea.isPaid ? (
-            <Button asChild variant="outline" size="sm" className="h-8 px-3 cursor-pointer">
-              <Link href={`/idea/${idea.id}`}>View</Link>
-            </Button>
-          ) : isAuthenticated && hasPaid ? (
-            <Button asChild variant="outline" size="sm" className="h-8 px-3 cursor-pointer">
-              <Link href={`/idea/${idea.id}`}>View</Link>
-            </Button>
-          ) : (
+          {idea.isPaid ? (
             <Button
               onClick={handleViewIdea}
               size="sm"
-              disabled={isParchesing}
-              className="h-8 px-3 bg-green-600 hover:bg-green-700 cursor-pointer"
+              className="h-8 px-3 bg-green-600 hover:bg-green-700"
             >
-              {isAuthenticated ? isParchesing ? "Purchase..." : "Purchase" : "Login"}
+              {isAuthenticated ? "Purchase" : "Login"}
+            </Button>
+          ) : (
+            <Button asChild variant="outline" size="sm" className="h-8 px-3">
+              <Link
+                href={`/idea/${idea.id}`}
+                aria-label={`View details for ${idea.title}`}
+              >
+                View
+              </Link>
             </Button>
           )}
         </div>
