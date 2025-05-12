@@ -92,8 +92,8 @@ const RegisterForm = () => {
         router.push("/");
       }
     } catch (err) {
-      setError(err.message || "Failed to register. Please try again.");
-      console.log(err.message);
+      setError( "Failed to register. Please try again.");
+      console.log(err);
     } finally {
       setIsLoading(false);
     }

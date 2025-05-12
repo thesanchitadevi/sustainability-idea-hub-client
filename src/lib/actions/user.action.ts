@@ -32,7 +32,7 @@ export const registerUser = async (userData: FormData) => {
 };
 
 export const getMe = async () => {
-  const accessToken = (await cookies()).get("accessToken")?.value;
+  const accessToken = (await cookies()).get("accessToken")!.value;
   const res = await fetch(
     "https://sustainability-idea-hub-server.vercel.app/api/user/me",
     {

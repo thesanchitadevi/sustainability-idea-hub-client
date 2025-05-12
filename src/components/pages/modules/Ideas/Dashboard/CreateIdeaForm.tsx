@@ -36,7 +36,7 @@ const formSchema = z.object({
   description: z.string().optional(),
   status: z.enum(["DRAFT", "APPROVED", "REJECT", "UNDER_REVIEW"]),
   category: z.enum(["ENERGY", "WASTE", "TRANSPORTATION"]),
-  isPaid: z.boolean().default(false),
+  isPaid: z.boolean(),
 });
 
 type FormValues = z.infer<typeof formSchema>;

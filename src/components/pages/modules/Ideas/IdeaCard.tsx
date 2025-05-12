@@ -19,6 +19,7 @@ import { ThumbsUp, ThumbsDown, Crown } from "lucide-react";
 
 import { useEffect, useState } from "react";
 import { getCurrentUser, getPaidInfo, givePayment } from "@/service/auth";
+import { IUser } from "@/context/userContext";
 
 interface IdeaCardProps {
   idea: IIdea;
@@ -36,8 +37,9 @@ export function IdeaCard({
   const router = useRouter();
 
   const [isPaid, setIsPaid] = useState("");
-  const [paidInfo, setPaidInfo] = useState({});
-  const [user, setUserINof] = useState(null);
+  
+  const [user, setUserINof] = useState<IUser | null>(null);
+
   const [isParchesing, setIsParchesing] = useState(false);
 
   useEffect(() => {
@@ -47,10 +49,16 @@ export function IdeaCard({
           getCurrentUser(),
           getPaidInfo(idea.id),
         ]);
-        setUserINof(userData);
+        const userInfo: IUser = {
+        userId: userData?.id || "",
+        email: userData?.email || "",
+        role: userData?.role || "MEMBERS",
+        
+      };
+        setUserINof(userInfo);
         const paymentInfo = res?.data;
         setIsPaid(paymentInfo?.status);
-        setPaidInfo(paymentInfo);
+        
       } catch (error) {
         console.error("Error fetching payment or user info:", error);
       }

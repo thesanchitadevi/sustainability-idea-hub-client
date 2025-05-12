@@ -26,7 +26,7 @@ export const  middleware = async(req: NextRequest) => {
         }
         else {
             return NextResponse.redirect(
-                new  URL(`http://localhost:3000/login?redirectPath=${pathname}`, req.url)
+                new  URL(`${process.env.NEXT_PUBLIC_FRONTEND_URL}/login?redirectPath=${pathname}`, req.url)
             )
         }
     }
