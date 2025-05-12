@@ -1,33 +1,39 @@
-"use client";
 import { IIdea } from "@/types";
-import { IdeaGallery } from "./IdeaGallery";
 import { format } from "date-fns";
 import { ArrowBigUp, User } from "lucide-react";
 import { CategoryBadge } from "./CategoryBadge";
+import CommentsSection from "./CommentsSection";
+import { IdeaGallery } from "./IdeaGallery";
+import { StatusBadge } from "./StatusBadge";
 
 export function IdeaDetailsCard({ idea }: { idea: IIdea }) {
+  const {
+    title,
+    category,
+    status,
+    isPaid,
+    votes = 0,
+    images,
+    price = 200,
+    problem_statement,
+    proposed_solution,
+    createdAt,
+    updatedAt,
+    isPublished,
+    user,
+  } = idea || {};
+  console.log("idea", idea);
   return (
     <div className="w-full bg-white rounded-xl shadow-md overflow-hidden">
       {/* Header Section */}
-      <div className="p-6 border-b ">
+      <div className="p-6 border-b">
         <div className="flex justify-between items-start">
           <div className="w-full">
-            <h1 className="text-2xl font-bold text-gray-800">
-              {idea.title} <CategoryBadge category={idea.category} />
-            </h1>
+            <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
             <div className="flex flex-wrap gap-2 mt-3 items-center">
-              <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-                  <User className="h-4 w-4 text-gray-500" />
-                </div>
-                <div>
-                  <p className="text-medium text-gray-600">
-                    {idea.user?.name || "Community Member"} <br />
-                  </p>
-                </div>
-              </div>
-
-              {idea.isPaid && (
+              <CategoryBadge category={category} />
+              <StatusBadge status={status} />
+              {isPaid && (
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
                   Premium Idea
                 </span>
@@ -36,9 +42,7 @@ export function IdeaDetailsCard({ idea }: { idea: IIdea }) {
           </div>
           <div className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full min-w-fit">
             <ArrowBigUp className="h-4 w-4 text-green-600" />
-            <span className="font-medium">
-              {idea.votes?.UP_VOTE || 0} votes
-            </span>
+            <span className="font-medium">{votes || 0} votes</span>
           </div>
         </div>
       </div>
@@ -46,17 +50,17 @@ export function IdeaDetailsCard({ idea }: { idea: IIdea }) {
       {/* Gallery and Content Grid */}
       <div className="grid md:grid-cols-2 gap-8 p-6">
         <div className="w-full">
-          <IdeaGallery images={idea.images} />
+          <IdeaGallery images={images} />
         </div>
 
         <div className="space-y-6">
           {/* Price Section */}
-          {idea.isPaid && (
+          {isPaid && (
             <div className="bg-blue-50 p-4 rounded-lg">
               <div className="flex justify-between items-center">
                 <span className="font-medium text-blue-800">Price:</span>
                 <span className="text-xl font-bold text-blue-900">
-                  ৳{idea.price || 200}
+                  ৳{price || 200}
                 </span>
               </div>
               <p className="text-sm text-blue-600 mt-1">
@@ -72,7 +76,7 @@ export function IdeaDetailsCard({ idea }: { idea: IIdea }) {
                 Problem Statement
               </h3>
               <p className="text-gray-700 mt-2 leading-relaxed">
-                {idea.problem_statement || "No problem statement provided"}
+                {problem_statement || "No problem statement provided"}
               </p>
             </div>
             <div>
@@ -80,7 +84,7 @@ export function IdeaDetailsCard({ idea }: { idea: IIdea }) {
                 Proposed Solution
               </h3>
               <p className="text-gray-700 mt-2 leading-relaxed">
-                {idea.proposed_solution || "No solution details provided"}
+                {proposed_solution || "No solution details provided"}
               </p>
             </div>
           </div>
@@ -90,28 +94,42 @@ export function IdeaDetailsCard({ idea }: { idea: IIdea }) {
             <div className="bg-gray-50 p-3 rounded-lg">
               <p className="text-gray-500 text-xs">Created</p>
               <p className="font-medium">
-                {format(new Date(idea.createdAt), "MMM d, yyyy")}
+                {format(new Date(createdAt), "MMM d, yyyy")}
               </p>
             </div>
             <div className="bg-gray-50 p-3 rounded-lg">
               <p className="text-gray-500 text-xs">Updated</p>
               <p className="font-medium">
-                {format(new Date(idea.updatedAt), "MMM d, yyyy")}
+                {format(new Date(updatedAt), "MMM d, yyyy")}
               </p>
             </div>
             <div className="bg-gray-50 p-3 rounded-lg">
               <p className="text-gray-500 text-xs">Type</p>
-              <p className="font-medium">{idea.isPaid ? "Premium" : "Free"}</p>
+              <p className="font-medium">{isPaid ? "Premium" : "Free"}</p>
             </div>
             <div className="bg-gray-50 p-3 rounded-lg">
               <p className="text-gray-500 text-xs">Visibility</p>
               <p className="font-medium">
-                {idea.isPublished ? "Public" : "Private"}
+                {isPublished ? "Public" : "Private"}
               </p>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Footer with Author Info */}
+      <div className="bg-gray-50 p-6 border-t">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+            <User className="h-5 w-5 text-gray-500" />
+          </div>
+          <div>
+            <p className="font-medium text-gray-700">Submitted by</p>
+            <p className="text-sm text-gray-600">{user?.name}</p>
+          </div>
+        </div>
+      </div>
+      <CommentsSection ideaId={idea?.id} />
     </div>
   );
 }

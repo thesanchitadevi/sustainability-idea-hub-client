@@ -1,24 +1,20 @@
 "use client";
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { IIdea } from "@/types";
-import { CategoryBadge } from "./CategoryBadge";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ThumbsUp, ThumbsDown } from "lucide-react";
-
-import { useEffect, useState } from "react";
-import { getCurrentUser, getPaidInfo, givePayment } from "@/service/auth";
-
+import { IIdea } from "@/types";
+import { ThumbsDown, ThumbsUp } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { CategoryBadge } from "./CategoryBadge";
 
 interface IdeaCardProps {
   idea: IIdea;
@@ -34,53 +30,21 @@ export function IdeaCard({
   isAuthenticated = false,
 }: IdeaCardProps) {
   const router = useRouter();
-  
-  const [isPaid, setIsPaid] = useState("");
-  const [paidInfo, setPaidInfo] = useState({});
-  const [user, setUserINof] = useState(null);
-  const [isParchesing, setIsParchesing] = useState(false);
 
-  
-  useEffect(() => {
-    const getPayinfo = async () => {
-     try {
-      const [userData, res] = await Promise.all([
-        getCurrentUser(),
-        getPaidInfo(idea.id)
-      ])
-      setUserINof(userData);
-      const paymentInfo = res?.data;
-      setIsPaid(paymentInfo?.status);
-      setPaidInfo(paymentInfo);
-     } catch (error) {
-      console.error('Error fetching payment or user info:', error);
-     }
-    };
-    getPayinfo();
-  }, [idea.id]);
-  const hasPaid = user && isPaid === "PAID";
-  isAuthenticated = !!user;
-
-  // console.log("this is my parchese info = ", user)
-
-  if (!idea.isPublished) return null;
+  // if (!idea.isPublished) return null;
 
   const displayImage =
     idea.images?.length > 0
       ? idea.images[Math.min(displayImageIndex, idea.images.length - 1)]
       : null;
 
-  const handleViewIdea = async(e: React.MouseEvent) => {
+  const handleViewIdea = (e: React.MouseEvent) => {
     if (idea.isPaid) {
       e.preventDefault();
       if (!isAuthenticated) {
         router.push(`/login?callbackUrl=/idea/${idea.id}`);
       } else {
-        setIsParchesing(true);
-        const paymentData = await givePayment(idea.id);
-        setIsParchesing(false)
-        // console.log(paymentData?.data?.paymentUrl)
-        router.push(paymentData?.data?.paymentUrl);
+        router.push(`/idea/${idea.id}/purchase`);
       }
     }
   };
@@ -174,27 +138,22 @@ export function IdeaCard({
             </div>
           </div>
 
-
-          {user?.role === "ADMIN" ? (
-            <Button asChild variant="outline" size="sm" className="h-8 px-3 cursor-pointer">
-              <Link href={`/idea/${idea.id}`}>View</Link>
-            </Button>
-          ) : !idea.isPaid ? (
-            <Button asChild variant="outline" size="sm" className="h-8 px-3 cursor-pointer">
-              <Link href={`/idea/${idea.id}`}>View</Link>
-            </Button>
-          ) : isAuthenticated && hasPaid ? (
-            <Button asChild variant="outline" size="sm" className="h-8 px-3 cursor-pointer">
-              <Link href={`/idea/${idea.id}`}>View</Link>
-            </Button>
-          ) : (
+          {idea.isPaid ? (
             <Button
               onClick={handleViewIdea}
               size="sm"
-              disabled={isParchesing}
-              className="h-8 px-3 bg-green-600 hover:bg-green-700 cursor-pointer"
+              className="h-8 px-3 bg-green-600 hover:bg-green-700"
             >
-              {isAuthenticated ? isParchesing ? "Purchase..." : "Purchase" : "Login"}
+              {isAuthenticated ? "Purchase" : "Login"}
+            </Button>
+          ) : (
+            <Button asChild variant="outline" size="sm" className="h-8 px-3">
+              <Link
+                href={`/idea/${idea.id}`}
+                aria-label={`View details for ${idea.title}`}
+              >
+                View
+              </Link>
             </Button>
           )}
         </div>
