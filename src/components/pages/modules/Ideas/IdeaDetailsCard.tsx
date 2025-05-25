@@ -1,11 +1,169 @@
 import { getVotes } from "@/lib/actions/vote.action";
 import { IIdea } from "@/types";
 import { format } from "date-fns";
-import { User } from "lucide-react";
+import { User, Star, ThumbsUp, Eye } from "lucide-react";
 import { CategoryBadge } from "./CategoryBadge";
 import CommentsSection from "./CommentsSection";
 import { IdeaGallery } from "./IdeaGallery";
 import VoteAction from "./VoteAction";
+import { getAllIdeas } from "@/lib/api/ideas/action";
+import SimilarIdeasComponent from "./SimilarIdeasComponent";
+
+// Rating Component
+function RatingSection() {
+  // This would typically come from your database
+  const averageRating = 4.2;
+  const totalRatings = 23;
+
+  return (
+    <div className="p-6 border-b bg-gray-50">
+      <h3 className="text-lg font-semibold text-gray-800 mb-4">
+        Rate this Idea
+      </h3>
+
+      {/* Current Rating Display */}
+      <div className="flex items-center gap-4 mb-4">
+        <div className="flex items-center gap-1">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <Star
+              key={star}
+              className={`h-5 w-5 ${
+                star <= Math.round(averageRating)
+                  ? "text-yellow-400 fill-current"
+                  : "text-gray-300"
+              }`}
+            />
+          ))}
+        </div>
+        <span className="text-sm text-gray-600">
+          {averageRating.toFixed(1)} ({totalRatings} ratings)
+        </span>
+      </div>
+
+      {/* Interactive Rating */}
+      <div className="space-y-3">
+        <p className="text-sm text-gray-700">Rate this idea:</p>
+        <div className="flex items-center gap-1">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <button
+              key={star}
+              className="p-1 hover:scale-110 transition-transform"
+            >
+              <Star className="h-6 w-6 text-gray-300 hover:text-yellow-400 cursor-pointer" />
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Similar Ideas Component
+async function SimilarIdeasSection({
+  currentIdeaId,
+  category,
+}: {
+  currentIdeaId: string;
+  category: string;
+}) {
+  // Fetch similar ideas from the database based on category
+  const allSimilarIdeas = await getAllIdeas(undefined, {
+    category: category,
+    isPublished: true,
+    sortBy: "newest",
+    limit: 6, // Get more than needed to filter out current idea
+  });
+
+  // Filter out the current idea and limit to 3 suggestions
+  const similarIdeas = allSimilarIdeas
+    .filter((idea) => idea.id !== currentIdeaId && idea.category === category)
+    .slice(0, 3)
+    .map((idea) => ({
+      id: idea.id,
+      title: idea.title,
+      category: idea.category,
+      rating: 4.2, // You can add rating field to your IIdea interface or calculate from votes
+      votes: 0, // You can calculate this from your votes data
+      views: 0, // Add views field to your database if needed
+      isPaid: idea.isPaid,
+      price: idea.price,
+    }));
+
+  return (
+    <div className="p-6 bg-gradient-to-b from-gray-50 to-white">
+      <h3 className="text-lg font-semibold text-gray-800 mb-6">
+        Similar Ideas in {category}
+      </h3>
+
+      {similarIdeas.length > 0 ? (
+        <>
+          <div className="grid md:grid-cols-3 gap-4">
+            {similarIdeas.map((idea) => (
+              <div
+                key={idea.id}
+                className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow"
+              >
+                <div className="space-y-3">
+                  {/* Title and Category */}
+                  <div>
+                    <h4 className="font-medium text-gray-800 line-clamp-2 mb-2">
+                      {idea.title}
+                    </h4>
+                    <CategoryBadge category={idea.category} />
+                  </div>
+
+                  {/* Stats */}
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-1">
+                        <Star className="h-3 w-3 text-yellow-400 fill-current" />
+                        <span>{idea.rating}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <ThumbsUp className="h-3 w-3" />
+                        <span>{idea.votes}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Eye className="h-3 w-3" />
+                        <span>{idea.views}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Price and Action */}
+                  <div className="flex justify-between items-center">
+                    {idea.isPaid ? (
+                      <span className="text-sm font-medium text-purple-600">
+                        ৳{idea.price || 200}
+                      </span>
+                    ) : (
+                      <span className="text-sm font-medium text-green-600">
+                        Free
+                      </span>
+                    )}
+                    <SimilarIdeasComponent ideaId={idea.id} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* View More Button - Only show if there are similar ideas */}
+          <div className="text-center mt-6">
+            <SimilarIdeasComponent type="viewMore" category={category} />
+          </div>
+        </>
+      ) : (
+        <div className="text-center py-8">
+          <p className="text-gray-500 mb-4">
+            No similar ideas found in {category} category
+          </p>
+          <SimilarIdeasComponent type="viewMore" />
+        </div>
+      )}
+    </div>
+  );
+}
 
 export async function IdeaDetailsCard({ idea }: { idea: IIdea }) {
   const {
@@ -138,7 +296,13 @@ export async function IdeaDetailsCard({ idea }: { idea: IIdea }) {
         <VoteAction ideaId={idea.id} votes={votes} />
       </div>
 
+      {/* Rating Section - Added before comments */}
+      <RatingSection />
+
       <CommentsSection ideaId={idea?.id} />
+
+      {/* Similar Ideas Section - Added after comments */}
+      <SimilarIdeasSection currentIdeaId={idea.id} category={category} />
     </div>
   );
 }
