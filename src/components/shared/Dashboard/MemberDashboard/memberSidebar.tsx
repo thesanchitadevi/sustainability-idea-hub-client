@@ -1,19 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import {
-  LayoutDashboard,
-  Lightbulb,
-  FileText,
-  Menu,
-  X,
-  LogOut,
-} from "lucide-react";
+import { usePathname } from "next/navigation";
+import { LayoutDashboard, Lightbulb, FileText, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { logOut, getCurrentUser } from "@/service/auth";
+import { getCurrentUser } from "@/service/auth";
 import Image from "next/image";
 
 const navLinks = [
@@ -40,9 +32,7 @@ export function Sidebar2({
   setSidebarOpen: (open: boolean) => void;
 }) {
   const pathname = usePathname();
-  const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [currentUser, setCurrentUser] = useState<{
     id: string;
     email: string;
@@ -69,19 +59,6 @@ export function Sidebar2({
     };
     fetchUser();
   }, []);
-
-  const handleLogout = async () => {
-    setIsLoggingOut(true);
-    try {
-      await logOut();
-      router.push("/login");
-      router.refresh();
-    } catch (error) {
-      console.error("Logout failed:", error);
-    } finally {
-      setIsLoggingOut(false);
-    }
-  };
 
   return (
     <>
@@ -111,28 +88,14 @@ export function Sidebar2({
         )}
       >
         <div className="p-4 border-b">
-          <div className="flex items-center gap-3">
-            {currentUser?.image ? (
-              <Image
-                src={currentUser.image}
-                alt="User profile"
-                width={40}
-                height={40}
-                className="rounded-full"
-              />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                <span className="text-lg font-medium">
-                  {currentUser?.name?.charAt(0).toUpperCase() || "U"}
-                </span>
-              </div>
-            )}
-            <div>
-              <p className="font-medium">
-                {currentUser?.name || currentUser?.email}
-              </p>
-              <p className="text-sm text-muted-foreground">Member</p>
-            </div>
+          <div className="flex flex-col items-start gap-2">
+            {/* Logo */}
+            <Link href="/">
+              <span className="text-2xl font-semibold">
+                <span className="text-green-600 font-quicksand">Eco</span>
+                Hive
+              </span>
+            </Link>
           </div>
         </div>
 
@@ -153,16 +116,30 @@ export function Sidebar2({
         </nav>
 
         <div className="p-4 border-t">
-          <Button
-            variant="ghost"
-            className="w-full justify-start gap-3 cursor-pointer"
-            onClick={handleLogout}
-            disabled={isLoggingOut}
-          >
-            <LogOut className="w-5 h-5" />
-            <span>Logout</span>
-            {isLoggingOut && <span className="ml-2 animate-spin">...</span>}
-          </Button>
+          {/* User info */}
+          <div className="flex items-center gap-3 py-3">
+            {currentUser?.image ? (
+              <Image
+                src={currentUser.image}
+                alt="User profile"
+                width={20}
+                height={20}
+                className="rounded-full"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                <span className="text-sm font-medium">
+                  {currentUser?.name?.charAt(0).toUpperCase() || "U"}
+                </span>
+              </div>
+            )}
+            <div>
+              <p className="text-sm font-medium">
+                {currentUser?.name || currentUser?.email}
+              </p>
+              <p className="text-sm text-muted-foreground">Member</p>
+            </div>
+          </div>
         </div>
       </aside>
     </>

@@ -7,8 +7,9 @@ import ViewModal from "@/components/pages/modules/Ideas/Dashboard/ViewModal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { IIdea } from "@/types";
 import { IdeaTable } from "@/components/pages/modules/Ideas/Dashboard/IdeaTable";
+import Pagination from "@/components/Common/Pagination";
 
-export default function MemberIdeasPage() {
+export default function MemberIdeasPage(page: number) {
   const [ideas, setIdeas] = useState<IIdea[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedIdea, setSelectedIdea] = useState<IIdea | null>(null);
@@ -72,6 +73,7 @@ export default function MemberIdeasPage() {
       <h1 className="text-2xl font-bold">My Submitted Ideas</h1>
 
       <IdeaTable data={ideas} onView={openModal} />
+      <Pagination totalPage={page}></Pagination>
 
       {selectedIdea && (
         <ViewModal

@@ -1,6 +1,3 @@
-
-
-
 "use client";
 import React, { useEffect, useState } from "react";
 import { Lightbulb, Clock, Check, X, ThumbsUp } from "lucide-react";
@@ -30,10 +27,8 @@ const AdminDashboard = () => {
         }
 
         const userIdeas = await getAllMemberIdeas();
-        
 
         const filteredIdeas = userIdeas?.data?.data;
-        
 
         // console.log("filteredIdeas", filteredIdeas);
 
@@ -46,7 +41,6 @@ const AdminDashboard = () => {
     };
     fetchIdeas();
   }, [router]);
-  
 
   if (loading) {
     return (
