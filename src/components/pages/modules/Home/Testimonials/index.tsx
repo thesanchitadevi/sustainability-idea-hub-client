@@ -21,7 +21,7 @@ export function Testimonials() {
 
         // Get top 3 most voted ideas from all published ideas
         const topVoted = [...ideas]
-          .sort((a, b) => (b.votes?.UP_VOTE || 0) - (a.votes?.UP_VOTE || 0))
+          .sort((a, b) => (b.votes?.filter(item => item.vote_type === 'UP_VOTE')?.length || 0) - (a.votes?.filter(item => item.vote_type === 'UP_VOTE')?.length || 0))
           .slice(0, 3);
 
         setTopIdeas(topVoted);
@@ -77,7 +77,7 @@ export function Testimonials() {
                     <ArrowBigUp className="h-5 w-5 text-green-600" />
                   </div>
                   <span className="font-medium">
-                    {idea?.votes?.UP_VOTE || 0} votes
+                    {idea?.votes?.filter(item => item.vote_type === 'UP_VOTE')?.length || 0} votes
                   </span>
                 </div>
 

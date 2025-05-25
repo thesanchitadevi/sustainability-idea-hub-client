@@ -288,7 +288,7 @@ const ViewModal: React.FC<ViewModalProps> = ({ idea, isOpen, onClose }) => {
                   <div>
                     <p className="text-sm text-gray-500">Votes</p>
                     <p className="font-medium">
-                      {idea.votes?.UP_VOTE || 0}{" "}
+                      {idea.votes?.filter(item => item.vote_type === 'UP_VOTE')?.length || 0}{" "}
                       <span className="text-gray-400 text-xs">(upvotes)</span>
                     </p>
                   </div>

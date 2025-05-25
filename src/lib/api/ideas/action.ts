@@ -75,7 +75,7 @@ export async function getAllIdeas(
   options?: {
     status?: string;
     isPublished?: boolean;
-    sortBy?: "newest" | "oldest";
+    sortBy?: "newest" | "oldest" | string;
     searchTerm?: string;
     category?: string;
     isPaid?: string;

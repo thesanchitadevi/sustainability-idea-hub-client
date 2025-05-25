@@ -7,7 +7,7 @@ const BASE_URL =
 
 export const getVotes = async (ideaId: string) => {
   try {
-    const accessToken = (await cookies()).get("accessToken")?.value;
+    const accessToken = (await cookies()).get("accessToken")!.value;
 
     const res = await fetch(`${BASE_URL}/vote/${ideaId}`, {
       method: "GET",
@@ -31,7 +31,7 @@ export const postVote = async (
   voteType: "UP_VOTE" | "DOWN_VOTE"
 ) => {
   try {
-    const accessToken = (await cookies()).get("accessToken")?.value;
+    const accessToken = (await cookies()).get("accessToken")!.value;
 
     if (!accessToken) {
       throw new Error("User not authenticated");

@@ -57,7 +57,7 @@ export const updateApprovedRejectIdeaStatus = async (id: string, data: {status: 
 };
 
 export const deleteIdeaByIdAdmin = async (id: string): Promise<void> => {
-  const accessToken = (await cookies()).get("accessToken")?.value;
+  const accessToken = (await cookies()).get("accessToken")!.value;
 
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/idea/${id}`, {
