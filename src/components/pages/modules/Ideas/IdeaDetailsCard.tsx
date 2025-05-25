@@ -5,16 +5,13 @@ import { User } from "lucide-react";
 import { CategoryBadge } from "./CategoryBadge";
 import CommentsSection from "./CommentsSection";
 import { IdeaGallery } from "./IdeaGallery";
-import { StatusBadge } from "./StatusBadge";
 import VoteAction from "./VoteAction";
 
 export async function IdeaDetailsCard({ idea }: { idea: IIdea }) {
   const {
     title,
     category,
-    status,
     isPaid,
-
     images,
     price = 200,
     problem_statement,
@@ -32,17 +29,37 @@ export async function IdeaDetailsCard({ idea }: { idea: IIdea }) {
       {/* Header Section */}
       <div className="p-6 border-b">
         <div className="flex justify-between items-start">
-          <div className="w-full">
+          <div className="flex-1">
             <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
-            <div className="flex flex-wrap gap-2 mt-3 items-center">
-              <CategoryBadge category={category} />
-              <StatusBadge status={status} />
-              {isPaid && (
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                  Premium Idea
-                </span>
-              )}
+
+            {/* Author Info */}
+            <div className="flex items-center gap-3 mt-3">
+              <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                <User className="h-4 w-4 text-gray-500" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">
+                  by{" "}
+                  <span className="font-medium text-gray-700">
+                    {user?.name}
+                  </span>
+                </p>
+              </div>
             </div>
+          </div>
+
+          {/* Badges in top right */}
+          <div className="flex flex-wrap gap-2 items-center">
+            <CategoryBadge category={category} />
+            {isPaid ? (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-medium font-medium bg-purple-100 text-purple-800">
+                Premium
+              </span>
+            ) : (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-medium font-medium bg-green-100 text-green-800">
+                Free
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -116,22 +133,11 @@ export async function IdeaDetailsCard({ idea }: { idea: IIdea }) {
           </div>
         </div>
       </div>
+
       <div>
         <VoteAction ideaId={idea.id} votes={votes} />
       </div>
 
-      {/* Footer with Author Info */}
-      <div className="bg-gray-50 p-6 border-t">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-            <User className="h-5 w-5 text-gray-500" />
-          </div>
-          <div>
-            <p className="font-medium text-gray-700">Submitted by</p>
-            <p className="text-sm text-gray-600">{user?.name}</p>
-          </div>
-        </div>
-      </div>
       <CommentsSection ideaId={idea?.id} />
     </div>
   );
