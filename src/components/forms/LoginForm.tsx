@@ -23,17 +23,17 @@ import {
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
+import { useUser } from "@/context/userContext";
 import { loginUser } from "@/lib/actions/auth.action";
 import { loginFormSchema } from "@/schemas/login.validation";
 import { Eye, EyeOff, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useUser } from "@/context/userContext";
 
 const LoginForm = () => {
   // const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
-  const {isLoading, setIsLoading} = useUser();
+  const { isLoading, setIsLoading } = useUser();
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
@@ -56,9 +56,9 @@ const LoginForm = () => {
   };
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
     setIsLoading(true);
-    setLoading(true)
+    setLoading(true);
     setError("");
-    console.log("ia loading", isLoading)
+    console.log("ia loading", isLoading);
 
     try {
       console.log("Logging in with values:", values);
@@ -80,11 +80,9 @@ const LoginForm = () => {
       console.error(err);
     } finally {
       setIsLoading(false);
-      setLoading(false)
+      setLoading(false);
     }
   }
-
- 
 
   return (
     <>
@@ -94,7 +92,7 @@ const LoginForm = () => {
         </Alert>
       )}
 
-      <div className="mb-4 w-full flex items-center justify-end">
+      <div className="mb-4 w-full flex items-center justify-center">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="cursor-pointer">
