@@ -279,7 +279,7 @@ const IdeaLists = ({
               </Button>
               <Button
                 className="bg-red-600 text-white hover:bg-red-700 cursor-pointer"
-                onClick={() => handleDeleteIdea(deleteIdeaId)}
+                onClick={() => handleDeleteIdea(deleteIdeaId as string)}
                 // onClick={() => selectedId && handleApprovedIdea(selectedId)}
               >
                 {loading ? 'Deleting...' : 'Yes'}
