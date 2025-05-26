@@ -8,6 +8,12 @@ import { z } from "zod";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Form,
   FormControl,
   FormField,
@@ -15,10 +21,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+
 import { Input } from "@/components/ui/input";
 import { loginUser } from "@/lib/actions/auth.action";
 import { loginFormSchema } from "@/schemas/login.validation";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useUser } from "@/context/userContext";
@@ -38,7 +45,15 @@ const LoginForm = () => {
       password: "",
     },
   });
+  const fillAdminCredentials = () => {
+    form.setValue("email", "ranok.admin@gmail.com");
+    form.setValue("password", "123456");
+  };
 
+  const fillMemberCredentials = () => {
+    form.setValue("email", "ranokraihan@gmail.com");
+    form.setValue("password", "123456");
+  };
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
     setIsLoading(true);
     setLoading(true)
@@ -79,6 +94,24 @@ const LoginForm = () => {
         </Alert>
       )}
 
+      <div className="mb-4 w-full flex items-center justify-end">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="cursor-pointer">
+              <User className="h-4 w-4" />
+              <span>Credentials</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={fillAdminCredentials}>
+              Admin Credentials
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={fillMemberCredentials}>
+              Member Credentials
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField

@@ -103,3 +103,16 @@ export interface IdeaDetails {
   user_id: string;
   user: User;
 }
+
+export interface IFilter {
+  name:
+    | "limit"
+    | "page"
+    | "searchTerm"
+    | "category"
+    | "status"
+    | "isPublished"
+    | "sortBy"
+    | "sortOrder";
+  value: string | number | boolean;
+}

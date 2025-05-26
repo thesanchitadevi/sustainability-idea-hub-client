@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -70,7 +69,7 @@ export function IdeaCard({
   const hasPaid = user && isPaid === "PAID";
   isAuthenticated = !!user;
 
-  if (!idea.isPublished) return null;
+  // if (!idea.isPublished) return null;
 
   const displayImage =
     idea.images?.length > 0
