@@ -22,7 +22,6 @@ const IdeaFilterSection = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [priceFilter, setPriceFilter] = useState("all");
   const [sortOption, setSortOption] = useState("desc");
-  console.log("select", selectedCategory);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +33,6 @@ const IdeaFilterSection = () => {
     router.push(`/idea${newSearchParams}`);
     form.reset();
     // Handle search logic here, e.g., update state or make API cal
-    console.log("Search Query:", searchQuery);
   };
 
   const handleCategoryChange = (value: string) => {
@@ -43,7 +41,6 @@ const IdeaFilterSection = () => {
       category: value === "All" ? undefined : value,
     });
     router.push(`/idea${newSearchParams}`);
-    console.log("Selected Category:", value);
   };
   const handleSortOrder = (value: string) => {
     setSortOption(value);
@@ -51,7 +48,6 @@ const IdeaFilterSection = () => {
       sortOrder: value === "asc" ? "asc" : undefined,
     });
     router.push(`/idea${newSearchParams}`);
-    console.log("Selected Category:", value);
   };
   const handlePriceFilter = (value: string) => {
     setPriceFilter(value);
@@ -59,7 +55,6 @@ const IdeaFilterSection = () => {
       isPaid: value === "all" ? undefined : value,
     });
     router.push(`/idea${newSearchParams}`);
-    console.log("Selected Category:", value);
   };
 
   return (

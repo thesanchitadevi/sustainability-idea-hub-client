@@ -22,11 +22,7 @@ const IdeaPagination = ({
   limit,
 }: IdeaPaginationProps) => {
   const totalPage = Math.ceil(total / limit);
-  console.log("total", total);
-  console.log("totalPage", totalPage);
-  console.log("currentPage", currentPage);
-  console.log("searchParams", searchParams);
-  console.log("limit", limit);
+
   const nextSearchParams = createSearchParamsLink(searchParams, {
     page: currentPage + 1,
   });
