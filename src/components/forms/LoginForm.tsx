@@ -21,9 +21,12 @@ import { loginFormSchema } from "@/schemas/login.validation";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useUser } from "@/context/userContext";
 
 const LoginForm = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const {isLoading, setIsLoading} = useUser();
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
@@ -38,7 +41,9 @@ const LoginForm = () => {
 
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
     setIsLoading(true);
+    setLoading(true)
     setError("");
+    console.log("ia loading", isLoading)
 
     try {
       console.log("Logging in with values:", values);
@@ -60,8 +65,11 @@ const LoginForm = () => {
       console.error(err);
     } finally {
       setIsLoading(false);
+      setLoading(false)
     }
   }
+
+ 
 
   return (
     <>
@@ -84,7 +92,7 @@ const LoginForm = () => {
                     placeholder="email@example.com"
                     type="email"
                     {...field}
-                    disabled={isLoading}
+                    disabled={loading}
                   />
                 </FormControl>
                 <FormMessage />
@@ -105,7 +113,7 @@ const LoginForm = () => {
                         placeholder="••••••••"
                         type={showPassword ? "text" : "password"}
                         {...field}
-                        disabled={isLoading}
+                        disabled={loading}
                         className="pr-10"
                       />
                       <Button
@@ -127,7 +135,7 @@ const LoginForm = () => {
           />
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign in"}
+            {loading ? "Signing in..." : "Sign in"}
           </Button>
         </form>
       </Form>
