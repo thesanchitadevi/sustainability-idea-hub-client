@@ -88,7 +88,7 @@ const MemberDashboard = () => {
   const chartData = getChartData();
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
+    <div className="p-4 md:p-6">
       <h1 className="text-2xl md:text-3xl font-bold">Dashboard Overview</h1>
 
       {/* Stats Cards Grid */}

@@ -47,7 +47,7 @@ export function Topbar({ text }: { text: string }) {
 
   if (isLoading) {
     return (
-      <header className="w-full border-b bg-white dark:bg-gray-950">
+      <header className="w-full border-b bg-white dark:bg-gray-950 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto p-4 flex justify-between items-center">
           <h1 className="text-xl font-semibold">{text}</h1>
           <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse"></div>
@@ -57,8 +57,8 @@ export function Topbar({ text }: { text: string }) {
   }
 
   return (
-    <header className="w-full border-b bg-white dark:bg-gray-950">
-      <div className="max-w-7xl mx-auto p-5 flex justify-between items-center">
+    <header className="w-full border-b bg-white dark:bg-gray-950 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto p-4 flex justify-between items-center">
         <h1 className="text-xl font-semibold">{text}</h1>
 
         {currentUser && (
