@@ -83,27 +83,23 @@ const VoteAction = ({ ideaId, votes }: IVoteAction) => {
       <div className="flex items-center ">
         <Button disabled={isLoading} variant="ghost" onClick={handleUpVote}>
           {userVote && userVote.vote_type === "UP_VOTE" ? (
-            <ThumbsUp
-              size={10}
-              fill="green"
-              className="size-10 text-green-700"
-            />
+            <ThumbsUp size={5} fill="green" className="size-5 text-green-700" />
           ) : (
-            <ThumbsUp className="size-10 text-green-700" />
+            <ThumbsUp className="size-5 text-green-700" />
           )}
         </Button>
-        <span className="text-4xl font-medium">{upVoteCount}</span>
+        <span className="text-xl font-medium">{upVoteCount}</span>
       </div>
 
       <div className="flex items-center ">
         <Button disabled={isLoading} variant="ghost" onClick={handleDownVote}>
           {userVote && userVote.vote_type === "DOWN_VOTE" ? (
-            <ThumbsDown size={10} fill="red" className="size-10 text-red-700" />
+            <ThumbsDown size={5} fill="red" className="size-5 text-red-700" />
           ) : (
-            <ThumbsDown className="size-10 text-red-700" />
+            <ThumbsDown className="size-5 text-red-700" />
           )}
         </Button>
-        <span className="text-4xl font-medium">{downVoteCount}</span>
+        <span className="text-xl font-medium">{downVoteCount}</span>
       </div>
     </div>
   );

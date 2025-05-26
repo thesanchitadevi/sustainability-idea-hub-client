@@ -6,31 +6,34 @@ import { getAllIdeas } from "@/lib/api/ideas/action";
 import { useRouter } from "next/navigation";
 import { IIdea } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  Legend,
+} from "recharts";
+
+const COLORS = ["#0088FE", "#FFBB28", "#00C49F", "#FF8042", "#8884D8"];
 
 const MemberDashboard = () => {
   const [ideas, setIdeas] = useState<IIdea[]>([]);
   const [loading, setLoading] = useState(true);
-
   const router = useRouter();
 
   useEffect(() => {
     const fetchIdeas = async () => {
       try {
         const user = await getCurrentUser();
-
         if (!user) {
           router.push("/login");
           return;
         }
-
-        const userIdeas = await getAllIdeas(user.id, {
-          sortBy: "newest",
-        });
-
-        const filteredIdeas = userIdeas.filter((idea) => {
-          return idea.user_id === user.id;
-        });
-
+        const userIdeas = await getAllIdeas(user.id, { sortBy: "newest" });
+        const filteredIdeas = userIdeas.filter(
+          (idea) => idea.user_id === user.id
+        );
         setIdeas(filteredIdeas);
       } catch (error) {
         console.error("Error:", error);
@@ -40,6 +43,28 @@ const MemberDashboard = () => {
     };
     fetchIdeas();
   }, [router]);
+
+  const getChartData = () => {
+    const statusCounts = {
+      DRAFT: 0,
+      UNDER_REVIEW: 0,
+      APPROVED: 0,
+      REJECT: 0,
+      IMPLEMENTED: 0,
+    };
+
+    ideas.forEach((idea) => {
+      statusCounts[idea.status as keyof typeof statusCounts]++;
+    });
+
+    return [
+      { name: "Drafts", value: statusCounts.DRAFT },
+      { name: "Under Review", value: statusCounts.UNDER_REVIEW },
+      { name: "Approved", value: statusCounts.APPROVED },
+      { name: "Rejected", value: statusCounts.REJECT },
+      { name: "Implemented", value: statusCounts.IMPLEMENTED },
+    ].filter((item) => item.value > 0); // Only show segments with values
+  };
 
   if (loading) {
     return (
@@ -60,12 +85,13 @@ const MemberDashboard = () => {
     );
   }
 
-  return (
-    <div className="p-4 md:p-6">
-      <h1 className="text-2xl md:text-3xl font-bold mb-6">
-        Dashboard Overview
-      </h1>
+  const chartData = getChartData();
 
+  return (
+    <div className="p-4 md:p-6 space-y-6">
+      <h1 className="text-2xl md:text-3xl font-bold">Dashboard Overview</h1>
+
+      {/* Stats Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {/* Total Ideas Card */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
@@ -168,6 +194,45 @@ const MemberDashboard = () => {
               <ThumbsUp className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Pie Chart Section */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
+        <h2 className="text-xl font-semibold mb-4">Idea Status Distribution</h2>
+        <div className="h-80">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={chartData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+                label={({ name, percent }) =>
+                  `${name}: ${(percent * 100).toFixed(0)}%`
+                }
+              >
+                {chartData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip
+                formatter={(value) => [`${value} ideas`, "Count"]}
+                contentStyle={{
+                  backgroundColor: "#fff",
+                  border: "1px solid #ddd",
+                  borderRadius: "4px",
+                }}
+              />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
       </div>
     </div>
