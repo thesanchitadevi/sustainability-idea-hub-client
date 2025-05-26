@@ -9,8 +9,10 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  Star,
   Users,
   X,
+  XCircle,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -25,6 +27,9 @@ const links = [
   },
   { href: "/dashboard/admin/users", label: "Users", icon: Users },
   { href: "/dashboard/admin/allIdea", label: "All Idea", icon: FileText },
+  { href: "/dashboard/admin/premium", label: "Premium Ideas", icon: Star },
+  { href: "/dashboard/admin/rejected", label: "Rejected Ideas", icon: XCircle },
+  // { href: "/dashboard/admin/premium ", label: "Premium Ideas", icon: Star },
   { href: "/", label: "Home", icon: Home },
 ];
 
