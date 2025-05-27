@@ -33,7 +33,7 @@ export async function CallToAction() {
                 size="lg"
                 className="bg-white text-green-800 hover:bg-gray-100"
               >
-                <Link href="/login">Sign Up Now</Link>
+                <Link href="/login">Login Now</Link>
               </Button>
             )}
           </div>

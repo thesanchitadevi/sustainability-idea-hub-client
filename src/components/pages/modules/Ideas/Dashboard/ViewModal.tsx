@@ -28,6 +28,7 @@ const ViewModal: React.FC<ViewModalProps> = ({ idea, isOpen, onClose }) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   if (!isOpen) return null;
+  const upvote = idea.votes.filter((item) => item.vote_type === "UP_VOTE");
 
   const handlePrevImage = () => {
     setActiveImageIndex((prev) =>
@@ -288,8 +289,8 @@ const ViewModal: React.FC<ViewModalProps> = ({ idea, isOpen, onClose }) => {
                   <div>
                     <p className="text-sm text-gray-500">Votes</p>
                     <p className="font-medium">
-                      {idea.votes?.UP_VOTE || 0}{" "}
-                      <span className="text-gray-400 text-xs">(upvotes)</span>
+                      {/* {idea.votes?.UP_VOTE || 0}{" "} */}
+                      <span className="text-gray-400 text-xs">{upvote?.length}</span>
                     </p>
                   </div>
                 </div>

@@ -11,16 +11,14 @@ import { logOut } from "@/service/auth";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { orderedIdeaSelector, removeIdea } from "@/redux/features/cartSlice";
 
-
 import {
   Sheet,
   SheetContent,
-    SheetHeader,
+  SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import AddToCartItems from "./addTocart/AddToCartItems";
-
 
 // { user }: { user: ICurrentUser  }
 export function Navbar() {
@@ -28,12 +26,12 @@ export function Navbar() {
   const pathname = usePathname();
   const { user } = useUser();
   const router = useRouter();
-  
-  const [isSheetOpen, setIsSheetOpen] = useState(false); 
+
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   // console.log("i akdjfl  = ", user)
 
   const addTocartIdeas = useAppSelector(orderedIdeaSelector);
-  const disPatch = useAppDispatch()
+  const disPatch = useAppDispatch();
   // console.log("add to cart = ", addTocartIdeas);
 
   let role;
@@ -48,15 +46,14 @@ export function Navbar() {
   };
 
   const handleProceedCheckout = () => {
-    if(!user) {
+    if (!user) {
       setIsSheetOpen(false);
-      router.push(`/login`)
-    }
-    else {
+      router.push(`/login`);
+    } else {
       setIsSheetOpen(false);
-    router.push('/checkout')
+      router.push("/checkout");
     }
-  }
+  };
   // Base nav links that are always shown
   const baseNavLinks = [
     { name: "Home", href: "/" },
@@ -70,9 +67,9 @@ export function Navbar() {
     ? [...baseNavLinks, { name: "Dashboard", href: `/dashboard/${role}` }]
     : baseNavLinks;
 
-  const handleCartDelete = (id:string) => {
-    disPatch(removeIdea(id))
-  }  
+  const handleCartDelete = (id: string) => {
+    disPatch(removeIdea(id));
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
@@ -103,10 +100,58 @@ export function Navbar() {
             ))}
           </nav>
 
-          {/* Auth Buttons (Desktop) */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <div className="relative">
               {/* add to cart */}
+              <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                <SheetTrigger className="w-10 cursor-pointer">
+                  <ShoppingCart className=" mt-2 mr-1" size={22} />
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle className="text-xl text-green-500">
+                      Your Cart Items
+                    </SheetTitle>
+                    {addTocartIdeas?.length == 0 ? (
+                      <div className="mt-10 text-center">
+                        <p className="text-gray-700 text-xl">
+                          Your Cart is Empty
+                        </p>
+                      </div>
+                    ) : (
+                      <AddToCartItems
+                        items={addTocartIdeas}
+                        onDelete={handleCartDelete}
+                      ></AddToCartItems>
+                    )}
+
+                    {/* <AddToCartItems items ={addTocartIdeas} onDelete={handleCartDelete}></AddToCartItems> */}
+                  </SheetHeader>
+                  {addTocartIdeas?.length > 0 && (
+                    <div className="text-center space-y-3 p-4">
+                      <p className="text-center text-lg">
+                        Total : {addTocartIdeas?.length * 200} BDT{" "}
+                      </p>
+                      <Button
+                        className="cursor-pointer w-full"
+                        onClick={handleProceedCheckout}
+                      >
+                        PROCEED TO CHECKOUT
+                      </Button>
+                    </div>
+                  )}
+                </SheetContent>
+              </Sheet>
+              {/* <Button variant="outline"  className="rounded-full  bg-white text-gray-800  hover:bg-white cursor-pointer"><ShoppingCart className=" " size={24}  /></Button> */}
+              <p className="absolute -top-1 -right-1 rounded-full w-6 h-6 flex items-center justify-center bg-green-500 text-white">
+                {addTocartIdeas?.length}
+              </p>
+            </div>
+
+            {/* Auth Buttons (Desktop) */}
+            <div className="hidden md:flex items-center gap-2">
+              {/* <div className="relative">
+             
               <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                 <SheetTrigger className="w-10 cursor-pointer">
                   <ShoppingCart className=" " size={24} />
@@ -122,7 +167,7 @@ export function Navbar() {
                       ) :  <AddToCartItems items ={addTocartIdeas} onDelete={handleCartDelete}></AddToCartItems>
                     }
                     
-                      {/* <AddToCartItems items ={addTocartIdeas} onDelete={handleCartDelete}></AddToCartItems> */}
+                    
                     
                   </SheetHeader>
                   {addTocartIdeas?.length > 0 && <div className="text-center space-y-3 p-4">
@@ -131,46 +176,41 @@ export function Navbar() {
                   </div>}
                 </SheetContent>
               </Sheet>
-              {/* <Button variant="outline"  className="rounded-full  bg-white text-gray-800  hover:bg-white cursor-pointer"><ShoppingCart className=" " size={24}  /></Button> */}
+              
               <p className="absolute -top-2 -right-1 rounded-full w-6 h-6 flex items-center justify-center bg-green-500 text-white">
                 {addTocartIdeas?.length}
               </p>
-            </div>
-            {user ? (
-              <Link href="/profile">
-                <Button variant="outline" className="text-lg cursor-pointer">
-                  My Profile
+            </div> */}
+              {!user &&(
+                <>
+                  <Link href="/login">
+                    <Button className="text-lg cursor-pointer">
+                      Login / Register
+                    </Button>
+                  </Link>
+                </>
+              )}
+              {user && (
+                <Button
+                  onClick={handleLogout}
+                  variant="outline"
+                  className=" cursor-pointer text-lg"
+                >
+                  Logout
                 </Button>
-              </Link>
-            ) : (
-              <>
-                <Link href="/login">
-                  <Button className="text-lg cursor-pointer">
-                    Login / Register
-                  </Button>
-                </Link>
-              </>
-            )}
-            {user && (
-              <Button
-                onClick={handleLogout}
-                variant="outline"
-                className=" cursor-pointer text-lg"
-              >
-                Logout
-              </Button>
-            )}
-          </div>
+              )}
+            </div>
 
-          {/* Mobile Toggle */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X size={20} /> : <Menu size={20} />}
-          </Button>
+            {/* Mobile Toggle */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? <X size={20} /> : <Menu size={20} />}
+            </Button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
