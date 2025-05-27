@@ -136,13 +136,7 @@ export function Navbar() {
                 {addTocartIdeas?.length}
               </p>
             </div>
-            {user ? (
-              <Link href="/profile">
-                <Button variant="outline" className="text-lg cursor-pointer">
-                  My Profile
-                </Button>
-              </Link>
-            ) : (
+            {!user && (
               <>
                 <Link href="/login">
                   <Button className="text-lg cursor-pointer">
