@@ -20,6 +20,8 @@ import { CategoryBadge } from "./CategoryBadge";
 import { IUser } from "@/context/userContext";
 import { getCurrentUser, getPaidInfo, givePayment } from "@/service/auth";
 import { useEffect, useState } from "react";
+import { useAppDispatch } from "@/redux/hooks";
+import { addIdea } from "@/redux/features/cartSlice";
 
 interface IdeaCardProps {
   idea: IIdea;
@@ -45,6 +47,7 @@ export function IdeaCard({
   const [user, setUserINof] = useState<IUser | null>(null);
 
   const [isParchesing, setIsParchesing] = useState(false);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const getPayinfo = async () => {
@@ -89,6 +92,21 @@ export function IdeaCard({
         router.push(paymentData?.data?.paymentUrl);
       }
     }
+  };
+  const handleAddToCart = async (idea: IIdea) => {
+    // console.log(idea)
+    dispatch(addIdea(idea))
+    // if (idea.isPaid) {
+    //   e.preventDefault();
+    //   if (!isAuthenticated) {
+    //     router.push(`/login?callbackUrl=/idea/${idea.id}`);
+    //   } else {
+    //     setIsParchesing(true);
+    //     const paymentData = await givePayment(idea.id);
+    //     setIsParchesing(false);
+    //     router.push(paymentData?.data?.paymentUrl);
+    //   }
+    // }
   };
 
   // const upvotes = idea.votes?.UP_VOTE || 0;
@@ -194,15 +212,16 @@ export function IdeaCard({
               </Button>
             ) : (
               <Button
-                onClick={handleViewIdea}
+                // onClick={handleViewIdea}
+                onClick={()=>handleAddToCart(idea)}
                 size="sm"
                 disabled={isParchesing}
-                className="h-8 px-3 bg-green-600 hover:bg-green-700"
+                className="h-8 px-3 bg-green-600 hover:bg-green-700 cursor-pointer"
               >
                 {isAuthenticated
                   ? isParchesing
-                    ? "Purchasing..."
-                    : "Purchase"
+                    ? "Adding..."
+                    : "Add to Cart"
                   : "Login"}
               </Button>
             )}
