@@ -29,6 +29,9 @@ const IdeaLists = ({
   const [selectedIdea, setSelectedIdea] = useState<IdeaDetails | null>(null);
   const [deleteIdeaId, setDeleteIdeaId] = useState<string | null> (null);
 
+
+  
+
   const handleApprovedIdea = async (id: string) => {
     // console.log(id, isBlock)
     try {
@@ -118,6 +121,7 @@ const IdeaLists = ({
             onClick={() => {
               setSelectedIdea(row.original);
               setShowDetailsModal(true);
+              
             }}
           />
         </div>
@@ -356,6 +360,9 @@ const IdeaLists = ({
           </div>
         </div>
       )}
+
+
+
     </div>
   );
 };

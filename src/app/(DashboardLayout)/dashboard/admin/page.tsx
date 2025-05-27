@@ -22,7 +22,6 @@ import { getAllMemberIdeas } from "@/service/adminIdeaControll";
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 
-
 const AdminDashboard = () => {
   const [ideas, setIdeas] = useState<IIdea[]>([]);
   const [loading, setLoading] = useState(true);
