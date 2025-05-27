@@ -67,12 +67,7 @@ async function SimilarIdeasSection({
   category: string;
 }) {
   // Fetch similar ideas from the database based on category
-  const allSimilarIdeas = await getAllIdeas(undefined, {
-    category: category,
-    isPublished: true,
-    sortBy: "newest",
-    limit: 6, // Get more than needed to filter out current idea
-  });
+  const allSimilarIdeas = await getAllIdeas();
 
   // Filter out the current idea and limit to 3 suggestions
   const similarIdeas = allSimilarIdeas
@@ -82,9 +77,9 @@ async function SimilarIdeasSection({
       id: idea.id,
       title: idea.title,
       category: idea.category,
-      rating: 4.2, // You can add rating field to your IIdea interface or calculate from votes
-      votes: 0, // You can calculate this from your votes data
-      views: 0, // Add views field to your database if needed
+      rating: 4.2,
+      votes: 0,
+      views: 0,
       isPaid: idea.isPaid,
       price: idea.price,
     }));
@@ -147,18 +142,13 @@ async function SimilarIdeasSection({
               </div>
             ))}
           </div>
-
-          {/* View More Button - Only show if there are similar ideas */}
-          <div className="text-center mt-6">
-            <SimilarIdeasComponent type="viewMore" category={category} />
-          </div>
         </>
       ) : (
         <div className="text-center py-8">
           <p className="text-gray-500 mb-4">
             No similar ideas found in {category} category
           </p>
-          <SimilarIdeasComponent type="viewMore" />
+          {/* <SimilarIdeasComponent type="viewMore" /> */}
         </div>
       )}
     </div>

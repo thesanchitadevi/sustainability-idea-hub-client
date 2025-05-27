@@ -20,7 +20,7 @@ export default function RootLayout({
         <Providers>
           {children}
           <Toaster />
-          <NextTopLoader />
+          <NextTopLoader showSpinner={false} />
         </Providers>
       </body>
     </html>

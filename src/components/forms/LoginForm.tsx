@@ -8,6 +8,12 @@ import { z } from "zod";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Form,
   FormControl,
   FormField,
@@ -15,18 +21,19 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+
 import { Input } from "@/components/ui/input";
+import { useUser } from "@/context/userContext";
 import { loginUser } from "@/lib/actions/auth.action";
 import { loginFormSchema } from "@/schemas/login.validation";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useUser } from "@/context/userContext";
 
 const LoginForm = () => {
   // const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
-  const {isLoading, setIsLoading} = useUser();
+  const { isLoading, setIsLoading } = useUser();
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
@@ -38,12 +45,20 @@ const LoginForm = () => {
       password: "",
     },
   });
+  const fillAdminCredentials = () => {
+    form.setValue("email", "ranok.admin@gmail.com");
+    form.setValue("password", "123456");
+  };
 
+  const fillMemberCredentials = () => {
+    form.setValue("email", "ranokraihan@gmail.com");
+    form.setValue("password", "123456");
+  };
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
     setIsLoading(true);
-    setLoading(true)
+    setLoading(true);
     setError("");
-    console.log("ia loading", isLoading)
+    console.log("ia loading", isLoading);
 
     try {
       console.log("Logging in with values:", values);
@@ -65,11 +80,9 @@ const LoginForm = () => {
       console.error(err);
     } finally {
       setIsLoading(false);
-      setLoading(false)
+      setLoading(false);
     }
   }
-
- 
 
   return (
     <>
@@ -79,6 +92,24 @@ const LoginForm = () => {
         </Alert>
       )}
 
+      <div className="mb-4 w-full flex items-center justify-center">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="cursor-pointer">
+              <User className="h-4 w-4" />
+              <span>Credentials</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={fillAdminCredentials}>
+              Admin Credentials
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={fillMemberCredentials}>
+              Member Credentials
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField

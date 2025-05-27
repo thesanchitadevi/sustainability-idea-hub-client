@@ -6,16 +6,19 @@ export const IdeaCategories = () => {
       name: "ENERGY",
       icon: "⚡",
       description: "Renewable energy and sustainability breakthroughs",
+      link: "/idea?category=ENERGY",
     },
     {
       name: "WASTE",
       icon: "♻️",
       description: "Innovations in waste management and recycling",
+      link: "/idea?category=WASTE",
     },
     {
       name: "TRANSPORTATION",
       icon: "🚗",
       description: "Mobility solutions and transport infrastructure",
+      link: "/idea?category=TRANSPORTATION",
     },
   ];
 
@@ -35,7 +38,8 @@ export const IdeaCategories = () => {
           {categories.map((category) => (
             <Link
               key={category.name}
-              href={`/ideas?category=${category.name.toLowerCase()}`}
+              href={category.link}
+              aria-label={`Explore ${category.name} ideas`}
               className="group relative bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:border-indigo-300 transition-all duration-200 hover:shadow-md"
             >
               <div className="flex items-start">
