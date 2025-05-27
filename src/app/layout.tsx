@@ -1,5 +1,6 @@
 import Providers from "@/providers/Provider";
 import type { Metadata } from "next";
+import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -14,21 +15,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <Providers>
-      <html lang="en">
-        <body>
-          {/* <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider> */}
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <Providers>
           {children}
           <Toaster />
-        </body>
-      </html>
-    </Providers>
+          <NextTopLoader showSpinner={false} />
+        </Providers>
+      </body>
+    </html>
   );
 }

@@ -1,20 +1,20 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { getCurrentUser, logOut } from "@/service/auth";
+import { getCurrentUser } from "@/service/auth";
 import {
   FileText,
   Home,
   LayoutDashboard,
-  LogOut,
   Menu,
+  Star,
   Users,
   X,
+  XCircle,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const links = [
@@ -25,6 +25,9 @@ const links = [
   },
   { href: "/dashboard/admin/users", label: "Users", icon: Users },
   { href: "/dashboard/admin/allIdea", label: "All Idea", icon: FileText },
+  { href: "/dashboard/admin/premium", label: "Premium Ideas", icon: Star },
+  { href: "/dashboard/admin/rejected", label: "Rejected Ideas", icon: XCircle },
+  // { href: "/dashboard/admin/premium ", label: "Premium Ideas", icon: Star },
   { href: "/", label: "Home", icon: Home },
 ];
 
@@ -35,9 +38,7 @@ export function Sidebar({
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const router = useRouter();
 
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [currentUser, setCurrentUser] = useState<{
     id: string;
     email: string;
@@ -64,19 +65,6 @@ export function Sidebar({
     };
     fetchUser();
   }, []);
-
-  const handleLogout = async () => {
-    setIsLoggingOut(true);
-    try {
-      await logOut();
-      router.push("/login");
-      router.refresh();
-    } catch (error) {
-      console.error("Logout failed:", error);
-    } finally {
-      setIsLoggingOut(false);
-    }
-  };
 
   return (
     <>
@@ -114,31 +102,6 @@ export function Sidebar({
                 Hive
               </span>
             </Link>
-
-            {/* User info */}
-            <div className="flex items-center gap-3 py-3">
-              {currentUser?.image ? (
-                <Image
-                  src={currentUser.image}
-                  alt="User profile"
-                  width={20}
-                  height={20}
-                  className="rounded-full"
-                />
-              ) : (
-                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-sm font-medium">
-                    {currentUser?.name?.charAt(0).toUpperCase() || "U"}
-                  </span>
-                </div>
-              )}
-              <div>
-                <p className="text-sm font-medium">
-                  {currentUser?.name || currentUser?.email}
-                </p>
-                <p className="text-sm text-muted-foreground">Admin</p>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -159,16 +122,30 @@ export function Sidebar({
         </nav>
 
         <div className="p-4 border-t">
-          <Button
-            variant="ghost"
-            className="w-full justify-start gap-3 cursor-pointer"
-            onClick={handleLogout}
-            disabled={isLoggingOut}
-          >
-            <LogOut className="w-5 h-5" />
-            <span>Log out</span>
-            {isLoggingOut && <span className="ml-2 animate-spin">...</span>}
-          </Button>
+          {/* User info */}
+          <div className="flex items-center gap-3 py-3">
+            {currentUser?.image ? (
+              <Image
+                src={currentUser.image}
+                alt="User profile"
+                width={20}
+                height={20}
+                className="rounded-full"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                <span className="text-sm font-medium">
+                  {currentUser?.name?.charAt(0).toUpperCase() || "U"}
+                </span>
+              </div>
+            )}
+            <div>
+              <p className="text-sm font-medium">
+                {currentUser?.name || currentUser?.email}
+              </p>
+              <p className="text-sm text-muted-foreground">Admin</p>
+            </div>
+          </div>
         </div>
       </aside>
     </>

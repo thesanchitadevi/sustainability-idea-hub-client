@@ -15,6 +15,8 @@ export interface IUser {
   role: "MEMBERS" | "ADMIN" | string;
   iat?: number;
   exp?: number;
+  imageUrl?: string;
+  name?: string;
 }
 
 interface AuthContextType {

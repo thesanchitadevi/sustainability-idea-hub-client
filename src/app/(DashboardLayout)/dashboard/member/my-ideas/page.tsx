@@ -1,12 +1,14 @@
 "use client";
+
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { getCurrentUser } from "@/service/auth";
 import { getAllIdeas } from "@/lib/api/ideas/action";
 import ViewModal from "@/components/pages/modules/Ideas/Dashboard/ViewModal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { IIdea } from "@/types";
 import { IdeaTable } from "@/components/pages/modules/Ideas/Dashboard/IdeaTable";
+import Pagination from "@/components/Common/Pagination";
 
 export default function MemberIdeasPage() {
   const [ideas, setIdeas] = useState<IIdea[]>([]);
@@ -14,6 +16,9 @@ export default function MemberIdeasPage() {
   const [selectedIdea, setSelectedIdea] = useState<IIdea | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const currentPage = Number(searchParams.get("page")) || 1;
 
   const openModal = (idea: IIdea) => {
     setSelectedIdea(idea);
@@ -72,6 +77,7 @@ export default function MemberIdeasPage() {
       <h1 className="text-2xl font-bold">My Submitted Ideas</h1>
 
       <IdeaTable data={ideas} onView={openModal} />
+      <Pagination totalPage={currentPage} />
 
       {selectedIdea && (
         <ViewModal
