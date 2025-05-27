@@ -13,7 +13,7 @@ const BASE_URL =
 export const createIdea = async (formData: FormData) => {
   try {
     // Get access token directly
-    const accessToken = (await cookies()).get("accessToken")!.value;
+    const accessToken = (await cookies()).get("accessToken")?.value;
 
     if (!accessToken) {
       throw new Error("User not authenticated");
